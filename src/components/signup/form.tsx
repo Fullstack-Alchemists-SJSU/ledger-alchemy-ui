@@ -18,22 +18,27 @@ const Form = () => {
 
 	const handleFirstNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setFirstName(e.target.value);
+		setErrors((errors) => ({ ...errors, firstName: '' }));
 	};
 
 	const handleLastNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setLastName(e.target.value);
+		setErrors((errors) => ({ ...errors, lastName: '' }));
 	};
 
 	const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setPhone(e.target.value);
+		setErrors((errors) => ({ ...errors, phone: '' }));
 	};
 
 	const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setEmail(e.target.value);
+		setErrors((errors) => ({ ...errors, email: '' }));
 	};
 
 	const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setPassword(e.target.value);
+		setErrors((errors) => ({ ...errors, password: '' }));
 	};
 
 	const validateForm = () => {
@@ -55,8 +60,8 @@ const Form = () => {
 			setErrors((errors) => ({ ...errors, phone: '' }));
 		}
 
-		if (!email || (email.length < 3 && !email.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i))) {
-			setErrors((errors) => ({ ...errors, email: 'Email must be at least 3 characters.' }));
+		if (!email || email.length < 3 || !email.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i)) {
+			setErrors((errors) => ({ ...errors, email: 'Enter a valid email.' }));
 		} else {
 			setErrors((errors) => ({ ...errors, email: '' }));
 		}

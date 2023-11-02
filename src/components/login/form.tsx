@@ -2,14 +2,16 @@ import { FormControl, FormLabel, Input, Button, FormErrorMessage, FormHelperText
 import { useState, useEffect } from 'react';
 import useGoogleLogin from '../../hooks/useGoogleLogin';
 import URLConstants from '../../services/url-constants';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { login } from '../../store/slice/user';
 
 const Form = () => {
 	const { handleLogin } = useGoogleLogin(URLConstants.GOOGLE_SIGN_UP);
-	const user = useSelector((state: RootState) => state.rootReducer.user);
+	const { user, networkState, error } = useSelector((state: RootState) => state.rootReducer.user);
 	const navigation = useNavigate();
+	const dispatch = useDispatch();
 
 	useEffect(() => {
 		if (!user) {
@@ -20,7 +22,9 @@ const Form = () => {
 					callback: handleLogin,
 				});
 
-				google.accounts.id.prompt();
+				if (!user || user == null) {
+					google.accounts.id.prompt();
+				}
 				google.accounts.id.renderButton(document.getElementById('loginDiv'), {
 					theme: 'outline',
 					size: 'large',
@@ -47,43 +51,42 @@ const Form = () => {
 
 	const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setEmail(e.target.value);
+		setErrors((errors) => ({ ...errors, email: '' }));
 	};
 
 	const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setPassword(e.target.value);
+		setErrors((errors) => ({ ...errors, password: '' }));
 	};
 
-	const validateForm = () => {
-		if (!email || (email.length < 3 && !email.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i))) {
-			setErrors((errors) => ({ ...errors, email: 'Email must be at least 3 characters.' }));
-		} else {
-			setErrors((errors) => ({ ...errors, email: '' }));
-		}
-
-		if (!password || password.length < 8) {
+	const handleLoginClick = () => {
+		if (!email || email.length < 3 || !email.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i)) {
+			setErrors((errors) => ({ ...errors, email: 'Enter a valid email.' }));
+		} else if (!password || password.length < 8) {
 			setErrors((errors) => ({ ...errors, password: 'Password must be at least 8 characters.' }));
 		} else {
-			setErrors((errors) => ({ ...errors, password: '' }));
+			if (networkState === 'idle' || networkState === 'error') {
+				dispatch(login({ email, password }) as any);
+			}
 		}
 	};
 
 	return (
 		<div className="min-w-full px-8">
-			<div className="text-2xl font-bold text-center mb-8">Getting Started.</div>
+			<div className="text-2xl font-bold text-center mb-8">Login</div>
+			{error && <div className="text-red-600 text-center font-semibold">{error}</div>}
 			<FormControl isInvalid={errors.email ? true : false} className="mb-4">
 				<FormLabel>Email</FormLabel>
-				<Input type="email" value={email} onChange={handleEmailChange} />
-				<FormHelperText>We never share your email.</FormHelperText>
+				<Input type="email" value={email} onChange={handleEmailChange} placeholder="john@example.com" />
 				<FormErrorMessage>{errors.email}</FormErrorMessage>
 			</FormControl>
 			<FormControl isInvalid={errors.password ? true : false} className="mb-4">
 				<FormLabel>Password</FormLabel>
-				<Input type="password" value={password} onChange={handlePasswordChange} />
-				<FormHelperText>Must be at least 8 characters.</FormHelperText>
+				<Input type="password" value={password} onChange={handlePasswordChange} placeholder="Password" />
 				<FormErrorMessage>{errors.password}</FormErrorMessage>
 			</FormControl>
 			<FormControl className="mb-4 text-center">
-				<Button type="button" colorScheme="facebook" onClick={() => validateForm()}>
+				<Button type="button" colorScheme="facebook" onClick={() => handleLoginClick()}>
 					Login
 				</Button>
 			</FormControl>
