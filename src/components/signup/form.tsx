@@ -2,8 +2,11 @@ import { FormControl, FormLabel, Input, Button, FormErrorMessage, FormHelperText
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
-import { register } from '../../store/slice/user';
+import { register, resetNetworkState } from '../../store/slice/user';
 import Error from '../error/Error';
+import ModalComponent from '../modal/Modal';
+import { text } from 'stream/consumers';
+import { useNavigate } from 'react-router-dom';
 
 const Form = () => {
 	const [firstName, setFirstName] = useState('');
@@ -20,8 +23,9 @@ const Form = () => {
 		password: '',
 	});
 
-	const {networkState, error} = useSelector((state: RootState) => state.rootReducer.user);
+	const { networkState, error } = useSelector((state: RootState) => state.rootReducer.user);
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
 
 	const handleFirstNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setFirstName(e.target.value);
@@ -60,46 +64,66 @@ const Form = () => {
 		} else if (!password || password.length < 8) {
 			setErrors((errors) => ({ ...errors, password: 'Password must be at least 8 characters.' }));
 		} else {
-			dispatch(register({firstName, lastName, phone, email, password}) as any);
+			dispatch(register({ firstName, lastName, phone, email, password }) as any);
 		}
 	};
 
 	return (
 		<div className="min-w-full px-8 py-4 h-fit">
 			<div className="text-2xl font-bold text-center mb-8">Getting Started.</div>
-			{error && <Error text={error}/>}
+			{error && <Error text={error} />}
+			{networkState === 'success' && (
+				<ModalComponent
+					isOpen={networkState === 'success'}
+					title="Registration Complete"
+					message="You have registered successfully. Please login to continue."
+					primaryButtonAction={{
+						text: 'Continue',
+						action: () => {
+							dispatch(resetNetworkState());
+							navigate('/');
+						},
+					}}
+				/>
+			)}
 			<div className="flex flex-row gap-2 mb-4">
 				<FormControl isInvalid={!!errors.firstName}>
 					<FormLabel>First Name</FormLabel>
 					<Input type="text" value={firstName} onChange={handleFirstNameChange} />
-					<FormErrorMessage className='text-start'>{errors.firstName}</FormErrorMessage>
+					<FormErrorMessage className="text-start">{errors.firstName}</FormErrorMessage>
 				</FormControl>
 				<FormControl isInvalid={!!errors.lastName}>
 					<FormLabel>Last Name</FormLabel>
 					<Input type="text" value={lastName} onChange={handleLastNameChange} />
-					<FormErrorMessage className='text-start'>{errors.lastName}</FormErrorMessage>
+					<FormErrorMessage className="text-start">{errors.lastName}</FormErrorMessage>
 				</FormControl>
 			</div>
 			<FormControl isInvalid={!!errors.phone} className="mb-4">
 				<FormLabel>Phone</FormLabel>
 				<Input type="tel" value={phone} onChange={handlePhoneChange} />
-				<FormHelperText className='text-start'>We never share your phone.</FormHelperText>
-				<FormErrorMessage className='text-start'>{errors.phone}</FormErrorMessage>
+				<FormHelperText className="text-start">We never share your phone.</FormHelperText>
+				<FormErrorMessage className="text-start">{errors.phone}</FormErrorMessage>
 			</FormControl>
 			<FormControl isInvalid={!!errors.email} className="mb-4">
 				<FormLabel>Email</FormLabel>
 				<Input type="email" value={email} onChange={handleEmailChange} />
-				<FormHelperText className='text-start'>We never share your email.</FormHelperText>
-				<FormErrorMessage className='text-start'>{errors.email}</FormErrorMessage>
+				<FormHelperText className="text-start">We never share your email.</FormHelperText>
+				<FormErrorMessage className="text-start">{errors.email}</FormErrorMessage>
 			</FormControl>
 			<FormControl isInvalid={!!errors.password} className="mb-4">
 				<FormLabel>Password</FormLabel>
 				<Input type="password" value={password} onChange={handlePasswordChange} />
-				<FormHelperText className='text-start'>Must be at least 8 characters.</FormHelperText>
-				<FormErrorMessage className='text-start'>{errors.password}</FormErrorMessage>
+				<FormHelperText className="text-start">Must be at least 8 characters.</FormHelperText>
+				<FormErrorMessage className="text-start">{errors.password}</FormErrorMessage>
 			</FormControl>
 			<FormControl className="mb-4 text-center">
-				<Button isLoading={networkState === "loading"} loadingText="Please wait" type="button" colorScheme="linkedin" onClick={() => handleSignupClick()}>
+				<Button
+					isLoading={networkState === 'loading'}
+					loadingText="Please wait"
+					type="button"
+					colorScheme="linkedin"
+					onClick={() => handleSignupClick()}
+				>
 					Submit
 				</Button>
 			</FormControl>

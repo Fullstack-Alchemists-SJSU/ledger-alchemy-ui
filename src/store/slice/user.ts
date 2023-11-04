@@ -40,15 +40,18 @@ export const login = createAsyncThunk('user/login', async (credentials: { email:
 	}
 });
 
-export const register = createAsyncThunk('user/register', async (user: { firstName: string; lastName: string; email: string; password: string; phone: string }) => {
-	try {
-		const response = await registerService(user);
-		return response.data;
-	} catch (error: any) {
-		console.log('error', error);
-		throw Error(error.response.data.message);
+export const register = createAsyncThunk(
+	'user/register',
+	async (user: { firstName: string; lastName: string; email: string; password: string; phone: string }) => {
+		try {
+			const response = await registerService(user);
+			return response.data;
+		} catch (error: any) {
+			console.log('error', error);
+			throw Error(error.response.data.message);
+		}
 	}
-});
+);
 
 const userSlice = createSlice({
 	name: 'user',
@@ -59,6 +62,9 @@ const userSlice = createSlice({
 		},
 		clearUser() {
 			return initialState;
+		},
+		resetNetworkState(state) {
+			state.networkState = 'idle';
 		},
 	},
 	extraReducers: (builder) => {
@@ -90,6 +96,6 @@ const userSlice = createSlice({
 	},
 });
 
-export const { setUser, clearUser } = userSlice.actions;
+export const { setUser, clearUser, resetNetworkState } = userSlice.actions;
 
 export default userSlice.reducer;
