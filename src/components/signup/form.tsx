@@ -1,5 +1,9 @@
 import { FormControl, FormLabel, Input, Button, FormErrorMessage, FormHelperText, IconButton } from '@chakra-ui/react';
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
+import { register } from '../../store/slice/user';
+import Error from '../error/Error';
 
 const Form = () => {
 	const [firstName, setFirstName] = useState('');
@@ -15,6 +19,9 @@ const Form = () => {
 		email: '',
 		password: '',
 	});
+
+	const {networkState, error} = useSelector((state: RootState) => state.rootReducer.user);
+	const dispatch = useDispatch();
 
 	const handleFirstNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setFirstName(e.target.value);
@@ -41,73 +48,58 @@ const Form = () => {
 		setErrors((errors) => ({ ...errors, password: '' }));
 	};
 
-	const validateForm = () => {
+	const handleSignupClick = () => {
 		if (!firstName || firstName.length < 3) {
 			setErrors((errors) => ({ ...errors, firstName: 'First name must be at least 3 characters.' }));
-		} else {
-			setErrors((errors) => ({ ...errors, firstName: '' }));
-		}
-
-		if (!lastName || lastName.length < 3) {
+		} else if (!lastName || lastName.length < 3) {
 			setErrors((errors) => ({ ...errors, lastName: 'Last name must be at least 3 characters.' }));
-		} else {
-			setErrors((errors) => ({ ...errors, lastName: '' }));
-		}
-
-		if (!phone || phone.length < 10) {
+		} else if (!phone || phone.length < 10) {
 			setErrors((errors) => ({ ...errors, phone: 'Phone must be at least 10 characters.' }));
-		} else {
-			setErrors((errors) => ({ ...errors, phone: '' }));
-		}
-
-		if (!email || email.length < 3 || !email.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i)) {
+		} else if (!email || email.length < 3 || !email.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i)) {
 			setErrors((errors) => ({ ...errors, email: 'Enter a valid email.' }));
-		} else {
-			setErrors((errors) => ({ ...errors, email: '' }));
-		}
-
-		if (!password || password.length < 8) {
+		} else if (!password || password.length < 8) {
 			setErrors((errors) => ({ ...errors, password: 'Password must be at least 8 characters.' }));
 		} else {
-			setErrors((errors) => ({ ...errors, password: '' }));
+			dispatch(register({firstName, lastName, phone, email, password}) as any);
 		}
 	};
 
 	return (
-		<div className="min-w-full px-8">
+		<div className="min-w-full px-8 py-4 h-fit">
 			<div className="text-2xl font-bold text-center mb-8">Getting Started.</div>
+			{error && <Error text={error}/>}
 			<div className="flex flex-row gap-2 mb-4">
-				<FormControl isInvalid={errors.firstName ? true : false}>
+				<FormControl isInvalid={!!errors.firstName}>
 					<FormLabel>First Name</FormLabel>
 					<Input type="text" value={firstName} onChange={handleFirstNameChange} />
-					<FormErrorMessage>{errors.firstName}</FormErrorMessage>
+					<FormErrorMessage className='text-start'>{errors.firstName}</FormErrorMessage>
 				</FormControl>
-				<FormControl isInvalid={errors.lastName ? true : false}>
+				<FormControl isInvalid={!!errors.lastName}>
 					<FormLabel>Last Name</FormLabel>
 					<Input type="text" value={lastName} onChange={handleLastNameChange} />
-					<FormErrorMessage>{errors.lastName}</FormErrorMessage>
+					<FormErrorMessage className='text-start'>{errors.lastName}</FormErrorMessage>
 				</FormControl>
 			</div>
-			<FormControl isInvalid={errors.phone ? true : false} className="mb-4">
+			<FormControl isInvalid={!!errors.phone} className="mb-4">
 				<FormLabel>Phone</FormLabel>
 				<Input type="tel" value={phone} onChange={handlePhoneChange} />
-				<FormHelperText>We never share your phone.</FormHelperText>
-				<FormErrorMessage>{errors.phone}</FormErrorMessage>
+				<FormHelperText className='text-start'>We never share your phone.</FormHelperText>
+				<FormErrorMessage className='text-start'>{errors.phone}</FormErrorMessage>
 			</FormControl>
-			<FormControl isInvalid={errors.email ? true : false} className="mb-4">
+			<FormControl isInvalid={!!errors.email} className="mb-4">
 				<FormLabel>Email</FormLabel>
 				<Input type="email" value={email} onChange={handleEmailChange} />
-				<FormHelperText>We never share your email.</FormHelperText>
-				<FormErrorMessage>{errors.email}</FormErrorMessage>
+				<FormHelperText className='text-start'>We never share your email.</FormHelperText>
+				<FormErrorMessage className='text-start'>{errors.email}</FormErrorMessage>
 			</FormControl>
-			<FormControl isInvalid={errors.password ? true : false} className="mb-4">
+			<FormControl isInvalid={!!errors.password} className="mb-4">
 				<FormLabel>Password</FormLabel>
 				<Input type="password" value={password} onChange={handlePasswordChange} />
-				<FormHelperText>Must be at least 8 characters.</FormHelperText>
-				<FormErrorMessage>{errors.password}</FormErrorMessage>
+				<FormHelperText className='text-start'>Must be at least 8 characters.</FormHelperText>
+				<FormErrorMessage className='text-start'>{errors.password}</FormErrorMessage>
 			</FormControl>
 			<FormControl className="mb-4 text-center">
-				<Button type="button" colorScheme="blackAlpha" onClick={() => validateForm()}>
+				<Button isLoading={networkState === "loading"} loadingText="Please wait" type="button" colorScheme="linkedin" onClick={() => handleSignupClick()}>
 					Submit
 				</Button>
 			</FormControl>
