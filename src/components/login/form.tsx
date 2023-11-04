@@ -1,14 +1,14 @@
 import { FormControl, FormLabel, Input, Button, FormErrorMessage, FormHelperText, IconButton } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
 import useGoogleLogin from '../../hooks/useGoogleLogin';
-import URLConstants from '../../services/url-constants';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { login } from '../../store/slice/user';
+import Error from '../error/Error';
 
 const Form = () => {
-	const { handleLogin } = useGoogleLogin(URLConstants.GOOGLE_SIGN_UP);
+	const { handleLogin } = useGoogleLogin();
 	const { user, networkState, error } = useSelector((state: RootState) => state.rootReducer.user);
 	const navigation = useNavigate();
 	const dispatch = useDispatch();
@@ -74,7 +74,7 @@ const Form = () => {
 	return (
 		<div className="min-w-full px-8">
 			<div className="text-2xl font-bold text-center mb-8">Login</div>
-			{error && <div className="text-red-600 text-center font-semibold">{error}</div>}
+			{error && <Error text={error}/>}
 			<FormControl isInvalid={errors.email ? true : false} className="mb-4">
 				<FormLabel>Email</FormLabel>
 				<Input type="email" value={email} onChange={handleEmailChange} placeholder="john@example.com" />

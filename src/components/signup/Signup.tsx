@@ -12,7 +12,7 @@ const Signup = () => {
 		<div className="container min-h-screen flex">
 			<div className="card flex flex-1 w-full min-h-screen md:max-w-[80vw] md:min-h-[80vh] lg:max-h-[60vh] lg:min-w-[80vh] lg:min-h-[80vh] md:self-center mx-auto">
 				<div className="flex flex-row flex-1">
-					<div className="flex flex-1 justify-center overflow-auto items-center">
+					<div className="flex flex-1 justify-center overflow-auto text-center">
 						<Form />
 					</div>
 					{width >= 640 && (
