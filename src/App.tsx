@@ -1,9 +1,9 @@
 import './App.css';
-import Login from './components/login/login';
-import ProtectedRoute from './components/protectedroute/protected-route';
-import Signup from './components/signup/Signup';
+import Login from './components/features/login/login';
+import ProtectedRoute from './components/common/protectedroute/protected-route';
+import Signup from './components/features/signup/Signup';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Profile from './components/profile/profile';
+import Profile from './components/features/profile/profile';
 
 function App() {
 	return (
