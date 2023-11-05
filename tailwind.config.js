@@ -5,7 +5,11 @@ module.exports = {
 		container: {
 			center: true,
 		},
-		extend: {},
+		extend: {
+			boxShadow: {
+				bottom: '0px 3px 0px #e5e7eb',
+			},
+		},
 	},
 	plugins: [],
 };
