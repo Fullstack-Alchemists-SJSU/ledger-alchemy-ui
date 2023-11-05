@@ -5,7 +5,12 @@ module.exports = {
 		container: {
 			center: true,
 		},
-		extend: {},
+		extend: {
+			colors: {
+				"dark-purple": "#080325",
+				"light-white": "rgba(255,255,255,0.17)",
+			  },
+		},
 	},
 	plugins: [],
 };

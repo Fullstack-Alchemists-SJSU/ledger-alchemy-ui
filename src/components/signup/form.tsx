@@ -1,5 +1,6 @@
 import { FormControl, FormLabel, Input, Button, FormErrorMessage, FormHelperText, IconButton } from '@chakra-ui/react';
 import { useState } from 'react';
+import {Link} from 'react-router-dom';
 
 const Form = () => {
 	const [firstName, setFirstName] = useState('');
@@ -131,6 +132,14 @@ const Form = () => {
 					icon={<FaTwitter />}
 				/>
 			</div> */}
+
+			<div className="text-center text-gray-400">
+				Already have an account?
+				{}{' '}
+				<Link to="/login" className="underline text-gray-500">
+					Login!
+				</Link>
+			</div>
 		</div>
 	);
 };
