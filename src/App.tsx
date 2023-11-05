@@ -5,6 +5,11 @@ import Signup from './components/signup/Signup';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Profile from './components/profile/profile';
 import Dashboard from './components/dashboard/dashboard';
+import MyWallet from './components/wallet/wallet';
+import RecentTransactions from './components/recent-transactions/recent-transactions';
+import Chatbot from './components/chatbot/chatbot';
+import Goals from './components/goals/goals';
+import Settings from './components/settings/settings';
 
 function App() {
 	return (
@@ -14,6 +19,11 @@ function App() {
 					<Route path="/" element={<Login />} />
 					<Route path="/signup" element={<Signup />} />
 					<Route path = "/dashboard" element = {<Dashboard/>}/>
+					<Route path = "/mywallet" element = {<MyWallet/>}/>
+					<Route path = "/rcttransactions" element = {<RecentTransactions/>}/>
+					<Route path = "/goals" element = {<Goals/>}/>
+					<Route path = "/chatbot" element = {<Chatbot/>}/>
+					<Route path = "/settings" element = {<Settings/>}/>
 					<Route
 						path="/profile"
 						element={
