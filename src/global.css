@@ -5,3 +5,7 @@
 .card {
 	@apply bg-white shadow-md rounded-lg;
 }
+
+.error {
+	@apply text-red-600 text-center font-semibold;
+}

@@ -1,10 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import NetworkState from '../networkstate';
-import { stat } from 'fs';
-import { loginService, registerService } from '../../services/user';
-import { CardFooter } from '@chakra-ui/react';
-import { Axios, AxiosError } from 'axios';
-import { debug } from 'console';
+import { loginService, registerService, updateProfileService } from '../../services/user';
 
 export type User = {
 	id: number;
@@ -53,6 +49,19 @@ export const register = createAsyncThunk(
 	}
 );
 
+export const updateProfile = createAsyncThunk(
+	'user/updateProfile',
+	async (user: { firstName: string; lastName: string; email: string; phone: string; id: number; token: string }) => {
+		try {
+			const response = await updateProfileService(user);
+			return response.data;
+		} catch (error: any) {
+			console.log('error', error);
+			throw Error(error.response.data.message);
+		}
+	}
+);
+
 const userSlice = createSlice({
 	name: 'user',
 	initialState,
@@ -91,6 +100,18 @@ const userSlice = createSlice({
 		builder.addCase(register.rejected, (state, action) => {
 			state.networkState = 'error';
 			console.log('action', action);
+			state.error = action.error.message;
+		});
+		builder.addCase(updateProfile.pending, (state) => {
+			state.networkState = 'loading';
+		});
+		builder.addCase(updateProfile.fulfilled, (state, action) => {
+			state.networkState = 'success';
+			state.user = action.payload;
+			state.error = undefined;
+		});
+		builder.addCase(updateProfile.rejected, (state, action) => {
+			state.networkState = 'error';
 			state.error = action.error.message;
 		});
 	},

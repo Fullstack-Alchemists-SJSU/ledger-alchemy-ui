@@ -1,1 +1,0 @@
-export default ({text}: {text: string}) => <div className="text-red-600 text-center font-semibold">{text}</div>

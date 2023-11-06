@@ -1,15 +1,15 @@
 import './App.css';
-import Login from './components/login/login';
-import ProtectedRoute from './components/protectedroute/protected-route';
-import Signup from './components/signup/Signup';
+import Login from './components/features/login/login';
+import ProtectedRoute from './components/common/protectedroute/protected-route';
+import Signup from './components/features/signup/Signup';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Profile from './components/profile/profile';
 import Dashboard from './components/dashboard/dashboard';
 import MyWallet from './components/wallet/wallet';
 import RecentTransactions from './components/recent-transactions/recent-transactions';
 import Chatbot from './components/chatbot/chatbot';
 import Goals from './components/goals/goals';
 import Settings from './components/settings/settings';
+import Profile from './components/features/profile/profile';
 
 function App() {
 	return (
