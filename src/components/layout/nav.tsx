@@ -10,14 +10,15 @@ import {PiUserCircleFill} from "react-icons/pi"
 import { Link } from "react-router-dom";
 
 import { useState } from "react";
+const logoSrc = 'src/logo.png';
 
 const menus = [
-  { name: "Dashboard" ,link:'/dashboard',icon: MdOutlineDashboard  },
-  { name: "My Wallet",link:'/mywallet',icon: FaWallet},
-  { name: "Recent Transactions", link:'/rcttransactions',icon: FaMoneyBillWave },
-  { name: "Set My Goals " ,link:'/goals',icon: GoGoal},
-  { name: "Talk to Alchemo",link:'/chatbot',icon: BsFillChatDotsFill},
-  { name: "Settings",link:'/settings',icon: IoSettings,margin:true},
+  { name: "Dashboard" ,link:'/user/dashboard',icon: MdOutlineDashboard  },
+  { name: "My Wallet",link:'/user/mywallet',icon: FaWallet},
+  { name: "Recent Transactions", link:'/user/rcttransactions',icon: FaMoneyBillWave },
+  { name: "Set My Goals " ,link:'/user/goals',icon: GoGoal},
+  { name: "Talk to Alchemo",link:'/user/chatbot',icon: BsFillChatDotsFill},
+  { name: "Settings",link:'/user/settings',icon: IoSettings,margin:true},
   { name: "Adrian Tra ",link:'/profile',icon: PiUserCircleFill },/// User name here
  
 ];
@@ -29,11 +30,19 @@ const Navbar = () => {
     return (
       
      <div
-        className={`bg-dark-purple min-h-screen ${
+        className={`bg-[#080325] min-h-screen ${
           open ? "w-72" : "w-16"
         } duration-500 text-gray-100 px-4`}
       >
-        <div className="py-3 flex justify-end">
+        
+        <div className="py-3 flex justify-between items-center">
+        {/* Logo Image */}
+        <img
+          src={logoSrc}
+          alt="Ledger Alchemy"
+          
+        />
+        {/* Menu Icon */}
           <HiMenuAlt3
             size={26}
             className="cursor-pointer"

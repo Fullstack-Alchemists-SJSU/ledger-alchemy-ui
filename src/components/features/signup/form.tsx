@@ -157,7 +157,7 @@ const Form = () => {
 			<div className="text-center text-gray-400">
 				Already have an account?
 				{}{' '}
-				<Link to="/login" className="underline text-gray-500">
+				<Link to="/" className="underline text-gray-500">
 					Login!
 				</Link>
 			</div>
