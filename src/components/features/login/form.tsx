@@ -37,7 +37,7 @@ const Form = () => {
 
 	useEffect(() => {
 		if (user) {
-			navigation('/profile');
+			navigation('/dashboard');
 		}
 	}, [user]);
 
@@ -107,20 +107,6 @@ const Form = () => {
 					Create one!
 				</Link>
 			</div>
-
-
-			{/*---------------------------------------------------------------------------------------------------------
-			Added this for creating static components.... Only routing change needed to add it post SSO Login/Auth */}
-
-			<div className="text-center text-gray-400">
-				Dashboard page for testing purpose
-				{}{' '}
-				<Link to="/dashboard" className="underline text-gray-500">
-					Dashboard
-				</Link>
-			</div>
-
-			{/*----------------------------------------------------------------------------------------------------*/}
 		</div>
 	);
 };
