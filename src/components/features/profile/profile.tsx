@@ -1,7 +1,7 @@
 import BaseContainer from '../../common/responsive/BaseContainer';
 import Toolbar from '../../common/toolbar/Toolbar';
 import { Button } from '@chakra-ui/react';
-import Form from './form';
+import Form from './Form';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../store/store';
 import { useState } from 'react';

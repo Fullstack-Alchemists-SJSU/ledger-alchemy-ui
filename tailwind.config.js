@@ -9,6 +9,9 @@ module.exports = {
 			boxShadow: {
 				bottom: '0px 3px 0px #e5e7eb',
 			},
+			colors: {
+				'dark-purple': '#080325',
+			},
 		},
 	},
 	plugins: [],
