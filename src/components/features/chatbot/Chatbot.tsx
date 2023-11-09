@@ -11,11 +11,12 @@ import ChatList from './ChatList';
 const Chatbot = () => {
 	const [reply, setReply] = useState('');
 
+	const user = useSelector((state: RootState) => state.rootReducer.user.user);
 	const { chats, networkState, error } = useSelector((state: RootState) => state.rootReducer.chat);
 	const dispatch = useDispatch();
 
 	const handleNewChat = () => {
-		dispatch(createNewChat(1) as any);
+		dispatch(createNewChat(user!!.id) as any);
 	};
 
 	useEffect(() => {

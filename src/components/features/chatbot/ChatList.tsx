@@ -6,13 +6,14 @@ import { Chat, getChatsByUserId } from '../../../store/slice/chat';
 import { useNavigate } from 'react-router-dom';
 
 const ChatList = () => {
+	const user = useSelector((state: RootState) => state.rootReducer.user.user);
 	const { chats, networkState, error } = useSelector((state: RootState) => state.rootReducer.chat);
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
 	useEffect(() => {
 		if (chats.length === 0) {
-			dispatch(getChatsByUserId(1) as any);
+			dispatch(getChatsByUserId(user!!.id) as any);
 		}
 	}, []);
 

@@ -6,38 +6,94 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Profile from './components/features/profile/Profile';
 import Chatbot from './components/features/chatbot/Chatbot';
 import Conversation from './components/features/chatbot/Conversation';
+import Layout from './components/layout/layout';
+import Dashboard from './components/features/dashboard/dashboard';
+import MyWallet from './components/features/wallet/wallet';
+import Settings from './components/features/settings/settings';
+import Goals from './components/features/goals/goals';
+import RecentTransactions from './components/features/recent-transactions/recent-transactions';
 
 function App() {
 	return (
 		<div className="bg-slate-200">
 			<BrowserRouter>
 				<Routes>
-					<Route path="/" element={<Login />} />
+					<Route path="/login" element={<Login />} />
 					<Route path="/signup" element={<Signup />} />
 					<Route
-						path="/profile"
+						path="/"
 						element={
 							<ProtectedRoute>
-								<Profile />
+								<Layout />{' '}
 							</ProtectedRoute>
 						}
-					/>
-					<Route
-						path="/chat"
-						element={
-							// <ProtectedRoute>
-							<Chatbot />
-							//</ProtectedRoute>
-						}
-					/>
-					<Route
-						path="/chat/:id"
-						element={
-							// <ProtectedRoute>
-							<Conversation />
-							//</ProtectedRoute>
-						}
-					/>
+					>
+						{/* Nested routes */}
+						<Route
+							path="dashboard"
+							element={
+								<ProtectedRoute>
+									<Dashboard />{' '}
+								</ProtectedRoute>
+							}
+						/>
+						<Route
+							path="mywallet"
+							element={
+								<ProtectedRoute>
+									<MyWallet />{' '}
+								</ProtectedRoute>
+							}
+						/>
+						<Route
+							path="rcttransactions"
+							element={
+								<ProtectedRoute>
+									<RecentTransactions />{' '}
+								</ProtectedRoute>
+							}
+						/>
+						<Route
+							path="goals"
+							element={
+								<ProtectedRoute>
+									<Goals />{' '}
+								</ProtectedRoute>
+							}
+						/>
+						<Route
+							path="settings"
+							element={
+								<ProtectedRoute>
+									<Settings />{' '}
+								</ProtectedRoute>
+							}
+						/>
+						<Route
+							path="/profile"
+							element={
+								<ProtectedRoute>
+									<Profile />
+								</ProtectedRoute>
+							}
+						/>
+						<Route
+							path="/chat"
+							element={
+								// <ProtectedRoute>
+								<Chatbot />
+								//</ProtectedRoute>
+							}
+						/>
+						<Route
+							path="/chat/:id"
+							element={
+								// <ProtectedRoute>
+								<Conversation />
+								//</ProtectedRoute>
+							}
+						/>
+					</Route>
 				</Routes>
 			</BrowserRouter>
 		</div>
