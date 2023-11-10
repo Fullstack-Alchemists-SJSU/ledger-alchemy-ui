@@ -30,7 +30,7 @@ function App() {
 					>
 						{/* Nested routes */}
 						<Route
-							path="dashboard"
+							index
 							element={
 								<ProtectedRoute>
 									<Dashboard />{' '}

@@ -17,7 +17,7 @@ const Navbar = () => {
 	const [open, setOpen] = useState(true);
 	const user = useSelector((state: RootState) => state.rootReducer.user.user);
 	const [menus, setMenus] = useState([
-		{ name: 'Dashboard', link: '/dashboard', icon: MdOutlineDashboard },
+		{ name: 'Dashboard', link: '/', icon: MdOutlineDashboard },
 		{ name: 'My Wallet', link: '/mywallet', icon: FaWallet },
 		{ name: 'Recent Transactions', link: '/rcttransactions', icon: FaMoneyBillWave },
 		{ name: 'Set My Goals ', link: '/goals', icon: GoGoal },

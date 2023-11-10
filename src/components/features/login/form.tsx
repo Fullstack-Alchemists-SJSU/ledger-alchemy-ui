@@ -37,7 +37,7 @@ const Form = () => {
 
 	useEffect(() => {
 		if (user) {
-			navigation('/dashboard');
+			navigation('/');
 		}
 	}, [user]);
 
