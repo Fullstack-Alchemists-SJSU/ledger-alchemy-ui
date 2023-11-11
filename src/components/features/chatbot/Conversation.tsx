@@ -126,24 +126,27 @@ const Conversation = () => {
 					{messages.map((message) => message && <ChatBubble key={message.timestamp} message={message} />)}
 				</div>
 				<div className="shadow-lg m-2">
-					<div className="flex flex-row items-center bg-white p-2 rounded-lg">
-						<Input
-							marginRight={4}
-							background="white"
-							padding={4}
-							value={userMessage}
-							onChange={handleMessageChange}
-							isDisabled={aiLoading}
-							placeholder={aiLoading ? 'Alchemo is thinking...' : 'Enter your message'}
-						/>
-						<IconButton
-							isDisabled={aiLoading || userMessage.length === 0}
-							colorScheme="purple"
-							aria-label="send"
-							icon={<AiOutlineSend color="white" />}
-							onClick={() => handleSend()}
-						/>
-					</div>
+					<form onSubmit={() => handleSend()}>
+						<div className="flex flex-row items-center bg-white p-2 rounded-lg">
+							<Input
+								marginRight={4}
+								background="white"
+								padding={4}
+								value={userMessage}
+								onChange={handleMessageChange}
+								isDisabled={aiLoading}
+								placeholder={aiLoading ? 'Alchemo is thinking...' : 'Enter your message'}
+							/>
+							<IconButton
+								isDisabled={aiLoading || userMessage.length === 0}
+								colorScheme="purple"
+								aria-label="send"
+								icon={<AiOutlineSend color="white" />}
+								onClick={() => handleSend()}
+								type="submit"
+							/>
+						</div>
+					</form>
 				</div>
 			</div>
 		</BaseContainer>

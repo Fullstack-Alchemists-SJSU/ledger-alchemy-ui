@@ -1,6 +1,6 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { Slice, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import NetworkState from '../networkstate';
-import { createNewChatService, getChatsByUserIdService } from '../../services/chat';
+import { createNewChatService, deleteChatByIdService, getChatsByUserIdService } from '../../services/chat';
 import { Message, Role } from './message';
 
 export type Chat = {
@@ -33,6 +33,8 @@ Some of your responsibilities will include but not limited to:
 1. Answering any finance related questions.
 2. If asked, creating budget plans for the individual to achieve his/her goals. You will be provided the relevant transactions data along with the goal.
 3. Providing insights based on the transactions data provided.
+
+Answer the questions in reasonably small chunks. Limit a chunk to a maximum of 4 lines. If you respond with all the information at once, the user might not be able to process it all at once. Ask if the user has understood the chunk and ask if you can continue. If the user says yes, continue with the next chunk of the response.
 
 Your name will be Alchemo.
 
@@ -67,13 +69,23 @@ export const getChatsByUserId = createAsyncThunk('chat/getChatsByUserId', async 
 	}
 });
 
-const chatSlice = createSlice({
+export const deleteChatById = createAsyncThunk('chat/deleteChatById', async (chatId: number) => {
+	try {
+		const response = await deleteChatByIdService(chatId);
+		return chatId;
+	} catch (error: any) {
+		console.log('error', error);
+		throw Error(error.response.data.message);
+	}
+});
+
+const chatSlice: Slice = createSlice({
 	name: 'chat',
 	initialState,
 	reducers: {
 		setMessages: (state, action) => {
 			const { chatId, messages } = action.payload;
-			const chat = state.chats.find((chat) => chat.id === chatId);
+			const chat = state.chats.find((chat: Chat) => chat.id === chatId);
 			if (chat) {
 				chat.messages = messages;
 			}
@@ -99,6 +111,18 @@ const chatSlice = createSlice({
 			state.chats = action.payload;
 		});
 		builder.addCase(getChatsByUserId.rejected, (state, action) => {
+			state.networkState = 'error';
+			state.error = action.error.message;
+		});
+
+		builder.addCase(deleteChatById.pending, (state) => {
+			state.networkState = 'loading';
+		});
+		builder.addCase(deleteChatById.fulfilled, (state, action) => {
+			state.networkState = 'success';
+			state.chats = state.chats.filter((chat) => chat.id !== action.payload);
+		});
+		builder.addCase(deleteChatById.rejected, (state, action) => {
 			state.networkState = 'error';
 			state.error = action.error.message;
 		});

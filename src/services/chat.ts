@@ -9,3 +9,7 @@ export const createNewChatService = (userId: number) => {
 export const getChatsByUserIdService = (userId: number) => {
 	return axios.get(ChatEndpoints.GET_CHATS_BY_USER(userId));
 };
+
+export const deleteChatByIdService = (chatId: number) => {
+	return axios.delete(ChatEndpoints.DELETE_CHAT_BY_ID(chatId));
+};

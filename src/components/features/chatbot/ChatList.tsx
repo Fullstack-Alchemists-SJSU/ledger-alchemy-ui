@@ -1,9 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../store/store';
-import { Table, TableCaption, TableContainer, Tbody, Th, Thead, Tr } from '@chakra-ui/react';
+import { IconButton, Table, TableCaption, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import { Chat, getChatsByUserId } from '../../../store/slice/chat';
+import { Chat, deleteChatById, getChatsByUserId } from '../../../store/slice/chat';
 import { useNavigate } from 'react-router-dom';
+import { MdDelete } from 'react-icons/md';
 
 const ChatList = () => {
 	const user = useSelector((state: RootState) => state.rootReducer.user.user);
@@ -34,15 +35,20 @@ const ChatList = () => {
 						</Tr>
 					</Thead>
 					<Tbody>
-						{chats.map((chat) => (
-							<Tr
-								key={chat.id}
-								className="cursor-pointer hover:bg-gray-100"
-								onClick={() => handleChatClick(chat)}
-							>
-								<Th>{chat.id}</Th>
-								<Th>{chat.title}</Th>
-								<Th>{new Date(chat.createdAt).toDateString()}</Th>
+						{chats.map((chat: Chat) => (
+							<Tr key={chat.id} className="cursor-pointer hover:bg-gray-100 group">
+								<Td onClick={() => handleChatClick(chat)}>{chat.id}</Td>
+								<Td onClick={() => handleChatClick(chat)}>{chat.title}</Td>
+								<Td onClick={() => handleChatClick(chat)}>{new Date(chat.createdAt).toDateString()}</Td>
+								<Td>
+									<IconButton
+										isLoading={networkState === 'loading'}
+										icon={<MdDelete />}
+										aria-label="Delete Chat"
+										className="invisible group-hover:visible"
+										onClick={() => dispatch(deleteChatById(chat.id) as any)}
+									/>
+								</Td>
 							</Tr>
 						))}
 					</Tbody>
