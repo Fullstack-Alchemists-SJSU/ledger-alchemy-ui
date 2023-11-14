@@ -4,7 +4,8 @@ import Toolbar from '../../common/toolbar/Toolbar';
 import { RootState } from '../../../store/store';
 import { useParams } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
-import { Chat, setMessages as setMessagesAction, systemPromptChat } from '../../../store/slice/chat';
+import { Chat, systemPromptChat } from '../../../store/slice/chat';
+import { addMessage } from '../../../store/slice/message';
 import { Message, Role } from '../../../store/slice/message';
 import { ChatEndpoints } from '../../../services/url-constants';
 import ChatBubble from './ChatBubbule';
@@ -12,7 +13,7 @@ import { IconButton, Input } from '@chakra-ui/react';
 import { AiOutlineSend } from 'react-icons/ai';
 
 const Conversation = () => {
-	const [aiLoading, setAiLoading] = useState(false);
+	const [aiLoading, setAiLoading] = useState<boolean | null>(null);
 	const [userMessage, setUserMessage] = useState('');
 	const [firstMessageSent, setFirstMessageSent] = useState(false);
 
@@ -20,7 +21,12 @@ const Conversation = () => {
 	let chat = useSelector((state: RootState) =>
 		state.rootReducer.chat.chats.find((chat: Chat) => chat.id === Number(id))
 	);
-	const [messages, setMessages] = useState<Message[]>(chat?.messages ?? []);
+	const chatMessages = useSelector((state: RootState) =>
+		state.rootReducer.messages.messages
+			? state.rootReducer.messages.messages.filter((message) => message.chat === Number(id)).flat()
+			: []
+	);
+	const [messages, setMessages] = useState<Message[]>(chatMessages ?? []);
 
 	const dispatch = useDispatch();
 	const messageListRef = useRef<HTMLDivElement>(null);
@@ -43,10 +49,6 @@ const Conversation = () => {
 		setTimeout(() => {
 			messageListRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: 'end' });
 		}, 200);
-
-		return () => {
-			dispatch(setMessagesAction({ chatId: chat?.id ?? 0, messages }));
-		};
 	}, [messages]);
 
 	async function sendMessage(messages: Message[]) {
@@ -68,6 +70,8 @@ const Conversation = () => {
 
 		const timestamp = Date.now().toString();
 
+		let messageText = '';
+
 		while (true) {
 			const { done, value } = await reader.read();
 			if (done) {
@@ -75,6 +79,8 @@ const Conversation = () => {
 			}
 
 			const token = decoder.decode(value);
+
+			messageText += token;
 
 			setMessages((messages) => {
 				const lastMessage = messages[messages.length - 1]!;
@@ -97,6 +103,16 @@ const Conversation = () => {
 			});
 		}
 
+		const newMessage: Message = {
+			id: 0,
+			role: Role.ASSISTANT,
+			content: messageText,
+			chat: Number(id),
+			timestamp: Date.now().toString(),
+		};
+
+		dispatch(addMessage(newMessage));
+
 		setAiLoading(false);
 	}
 
@@ -115,6 +131,7 @@ const Conversation = () => {
 		const updatedMessages = [...messages, newMessage];
 		setMessages(updatedMessages);
 		setUserMessage('');
+		dispatch(addMessage(newMessage));
 		sendMessage(updatedMessages);
 	};
 
@@ -126,24 +143,27 @@ const Conversation = () => {
 					{messages.map((message) => message && <ChatBubble key={message.timestamp} message={message} />)}
 				</div>
 				<div className="shadow-lg m-2">
-					<div className="flex flex-row items-center bg-white p-2 rounded-lg">
-						<Input
-							marginRight={4}
-							background="white"
-							padding={4}
-							value={userMessage}
-							onChange={handleMessageChange}
-							isDisabled={aiLoading}
-							placeholder={aiLoading ? 'Alchemo is thinking...' : 'Enter your message'}
-						/>
-						<IconButton
-							isDisabled={aiLoading || userMessage.length === 0}
-							colorScheme="purple"
-							aria-label="send"
-							icon={<AiOutlineSend color="white" />}
-							onClick={() => handleSend()}
-						/>
-					</div>
+					<form onSubmit={() => handleSend()}>
+						<div className="flex flex-row items-center bg-white p-2 rounded-lg">
+							<Input
+								marginRight={4}
+								background="white"
+								padding={4}
+								value={userMessage}
+								onChange={handleMessageChange}
+								isDisabled={aiLoading !== null && aiLoading}
+								placeholder={aiLoading ? 'Alchemo is thinking...' : 'Enter your message'}
+							/>
+							<IconButton
+								isDisabled={aiLoading || userMessage.length === 0}
+								colorScheme="purple"
+								aria-label="send"
+								icon={<AiOutlineSend color="white" />}
+								onClick={() => handleSend()}
+								type="submit"
+							/>
+						</div>
+					</form>
 				</div>
 			</div>
 		</BaseContainer>

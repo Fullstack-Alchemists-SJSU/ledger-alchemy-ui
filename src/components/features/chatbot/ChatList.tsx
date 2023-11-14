@@ -1,13 +1,20 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../store/store';
-import { Table, TableCaption, TableContainer, Tbody, Th, Thead, Tr } from '@chakra-ui/react';
+import { IconButton, Table, TableCaption, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import { Chat, getChatsByUserId } from '../../../store/slice/chat';
+import { Chat, deleteChatById, getChatsByUserId } from '../../../store/slice/chat';
 import { useNavigate } from 'react-router-dom';
+import { MdDelete } from 'react-icons/md';
+import { Message, addMessageTaskToQueue } from '../../../store/slice/message';
+import socket from '../../../services/socket';
 
 const ChatList = () => {
+	const [socketConnected, setSocketConnected] = useState(socket.connected);
 	const user = useSelector((state: RootState) => state.rootReducer.user.user);
 	const { chats, networkState, error } = useSelector((state: RootState) => state.rootReducer.chat);
+	let unSyncedMessages = useSelector((state: RootState) =>
+		state.rootReducer.messages.messages.filter((message: Message) => message && message.id === 0)
+	);
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
@@ -15,10 +22,18 @@ const ChatList = () => {
 		if (chats.length === 0) {
 			dispatch(getChatsByUserId(user!!.id) as any);
 		}
+
+		if (unSyncedMessages && unSyncedMessages.length > 0) {
+			console.log('dispatching');
+			dispatch(
+				addMessageTaskToQueue({ messages: unSyncedMessages, userId: user!!.id, token: user!!.token }) as any
+			);
+			unSyncedMessages = [];
+		}
 	}, []);
 
 	const handleChatClick = (chat: Chat) => {
-		navigate(`/chat/${chat.id}`, { state: { messages: chat.messages } });
+		navigate(`/chat/${chat.id}`);
 	};
 
 	return (
@@ -34,15 +49,20 @@ const ChatList = () => {
 						</Tr>
 					</Thead>
 					<Tbody>
-						{chats.map((chat) => (
-							<Tr
-								key={chat.id}
-								className="cursor-pointer hover:bg-gray-100"
-								onClick={() => handleChatClick(chat)}
-							>
-								<Th>{chat.id}</Th>
-								<Th>{chat.title}</Th>
-								<Th>{new Date(chat.createdAt).toDateString()}</Th>
+						{chats.map((chat: Chat) => (
+							<Tr key={chat.id} className="cursor-pointer hover:bg-gray-100 group">
+								<Td onClick={() => handleChatClick(chat)}>{chat.id}</Td>
+								<Td onClick={() => handleChatClick(chat)}>{chat.title}</Td>
+								<Td onClick={() => handleChatClick(chat)}>{new Date(chat.createdAt).toDateString()}</Td>
+								<Td>
+									<IconButton
+										isLoading={networkState === 'loading'}
+										icon={<MdDelete />}
+										aria-label="Delete Chat"
+										className="invisible group-hover:visible"
+										onClick={() => dispatch(deleteChatById(chat.id) as any)}
+									/>
+								</Td>
 							</Tr>
 						))}
 					</Tbody>

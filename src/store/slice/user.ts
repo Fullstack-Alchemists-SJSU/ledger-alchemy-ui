@@ -28,7 +28,6 @@ const initialState: UserState = {
 export const login = createAsyncThunk('user/login', async (credentials: { email: string; password: string }) => {
 	try {
 		const response = await loginService(credentials.email, credentials.password);
-		console.log('response', response);
 		return response.data;
 	} catch (error: any) {
 		console.log('error', error);

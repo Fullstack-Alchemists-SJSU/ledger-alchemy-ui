@@ -1,14 +1,13 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { Slice, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import NetworkState from '../networkstate';
-import { createNewChatService, getChatsByUserIdService } from '../../services/chat';
-import { Message, Role } from './message';
+import { createNewChatService, deleteChatByIdService, getChatsByUserIdService } from '../../services/chat';
+import message, { Message, Role, setMessages } from './message';
 
 export type Chat = {
 	id: number;
 	user: number;
 	title: string;
 	createdAt: string;
-	messages: Message[];
 };
 
 export type ChatState = {
@@ -34,6 +33,8 @@ Some of your responsibilities will include but not limited to:
 2. If asked, creating budget plans for the individual to achieve his/her goals. You will be provided the relevant transactions data along with the goal.
 3. Providing insights based on the transactions data provided.
 
+Answer the questions in reasonably small chunks. Limit a chunk to a maximum of 4 lines. If you respond with all the information at once, the user might not be able to process it all at once. Ask if the user has understood the chunk and ask if you can continue. If the user says yes, continue with the next chunk of the response.
+
 Your name will be Alchemo.
 
 Greet individuals in a simple way with your name. No need to mention how many years of experience you have or education level.
@@ -57,28 +58,43 @@ export const createNewChat = createAsyncThunk('chat/createNewChat', async (userI
 	}
 });
 
-export const getChatsByUserId = createAsyncThunk('chat/getChatsByUserId', async (userId: number) => {
+export const getChatsByUserId = createAsyncThunk('chat/getChatsByUserId', async (userId: number, { dispatch }) => {
 	try {
 		const response = await getChatsByUserIdService(userId);
-		return response.data;
+		const messages = response.data
+			.map((chat: Chat & { messages: Message[] }) =>
+				chat.messages && chat.messages.length > 0 ? chat.messages : []
+			)
+			.flat();
+		if (messages.length > 0) {
+			dispatch(setMessages(messages));
+		}
+		return response.data.map((chat: Chat) => ({
+			id: chat.id,
+			title: chat.title,
+			createdAt: chat.createdAt,
+			user: chat.user,
+		}));
 	} catch (error: any) {
 		console.log('error', error);
 		throw Error(error.response.data.message);
 	}
 });
 
-const chatSlice = createSlice({
+export const deleteChatById = createAsyncThunk('chat/deleteChatById', async (chatId: number) => {
+	try {
+		const response = await deleteChatByIdService(chatId);
+		return chatId;
+	} catch (error: any) {
+		console.log('error', error);
+		throw Error(error.response.data.message);
+	}
+});
+
+const chatSlice: Slice = createSlice({
 	name: 'chat',
 	initialState,
-	reducers: {
-		setMessages: (state, action) => {
-			const { chatId, messages } = action.payload;
-			const chat = state.chats.find((chat) => chat.id === chatId);
-			if (chat) {
-				chat.messages = messages;
-			}
-		},
-	},
+	reducers: {},
 	extraReducers: (builder) => {
 		builder.addCase(createNewChat.pending, (state) => {
 			state.networkState = 'loading';
@@ -102,9 +118,19 @@ const chatSlice = createSlice({
 			state.networkState = 'error';
 			state.error = action.error.message;
 		});
+
+		builder.addCase(deleteChatById.pending, (state) => {
+			state.networkState = 'loading';
+		});
+		builder.addCase(deleteChatById.fulfilled, (state, action) => {
+			state.networkState = 'success';
+			state.chats = state.chats.filter((chat) => chat.id !== action.payload);
+		});
+		builder.addCase(deleteChatById.rejected, (state, action) => {
+			state.networkState = 'error';
+			state.error = action.error.message;
+		});
 	},
 });
-
-export const { setMessages } = chatSlice.actions;
 
 export default chatSlice.reducer;
