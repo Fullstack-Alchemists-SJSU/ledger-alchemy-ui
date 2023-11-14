@@ -1,14 +1,13 @@
 import { Slice, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import NetworkState from '../networkstate';
 import { createNewChatService, deleteChatByIdService, getChatsByUserIdService } from '../../services/chat';
-import { Message, Role } from './message';
+import message, { Message, Role, setMessages } from './message';
 
 export type Chat = {
 	id: number;
 	user: number;
 	title: string;
 	createdAt: string;
-	messages: Message[];
 };
 
 export type ChatState = {
@@ -59,10 +58,23 @@ export const createNewChat = createAsyncThunk('chat/createNewChat', async (userI
 	}
 });
 
-export const getChatsByUserId = createAsyncThunk('chat/getChatsByUserId', async (userId: number) => {
+export const getChatsByUserId = createAsyncThunk('chat/getChatsByUserId', async (userId: number, { dispatch }) => {
 	try {
 		const response = await getChatsByUserIdService(userId);
-		return response.data;
+		const messages = response.data
+			.map((chat: Chat & { messages: Message[] }) =>
+				chat.messages && chat.messages.length > 0 ? chat.messages : []
+			)
+			.flat();
+		if (messages.length > 0) {
+			dispatch(setMessages(messages));
+		}
+		return response.data.map((chat: Chat) => ({
+			id: chat.id,
+			title: chat.title,
+			createdAt: chat.createdAt,
+			user: chat.user,
+		}));
 	} catch (error: any) {
 		console.log('error', error);
 		throw Error(error.response.data.message);
@@ -82,15 +94,7 @@ export const deleteChatById = createAsyncThunk('chat/deleteChatById', async (cha
 const chatSlice: Slice = createSlice({
 	name: 'chat',
 	initialState,
-	reducers: {
-		setMessages: (state, action) => {
-			const { chatId, messages } = action.payload;
-			const chat = state.chats.find((chat: Chat) => chat.id === chatId);
-			if (chat) {
-				chat.messages = messages;
-			}
-		},
-	},
+	reducers: {},
 	extraReducers: (builder) => {
 		builder.addCase(createNewChat.pending, (state) => {
 			state.networkState = 'loading';
@@ -128,7 +132,5 @@ const chatSlice: Slice = createSlice({
 		});
 	},
 });
-
-export const { setMessages } = chatSlice.actions;
 
 export default chatSlice.reducer;

@@ -1,3 +1,4 @@
+import Markdown from 'react-markdown';
 import { Message, Role } from '../../../store/slice/message';
 
 interface ChatBubbleProps {
@@ -11,6 +12,7 @@ const ChatBubble = ({ message }: ChatBubbleProps) => {
 				message.role === Role.ASSISTANT ? ' rounded-tr-lg self-start' : ' rounded-tl-lg self-end'
 			}`}
 		>
+			{' '}
 			{message.content}
 		</div>
 	);
