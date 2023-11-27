@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { UserEndpoints } from './url-constants';
+import { User } from '../store/slice/user';
 
 export function loginService(email: string, password: string) {
 	return axios.post(UserEndpoints.LOGIN, {
@@ -25,15 +26,8 @@ export function registerService(user: {
 	});
 }
 
-export function updateProfileService(user: {
-	firstName: string;
-	lastName: string;
-	email: string;
-	phone: string;
-	id: number;
-	token: string;
-}) {
-	return axios.put(UserEndpoints.UPDATE_PROFILE(user.id), user, {
-		headers: { Authorization: `Bearer ${user.token}` },
+export function updateProfileService(user: User) {
+	return axios.put(UserEndpoints.UPDATE_PROFILE(user.sub), user, {
+		headers: { Authorization: `Bearer ${user.sub}` },
 	});
 }

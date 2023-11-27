@@ -90,23 +90,6 @@ const Form = () => {
 					Login
 				</Button>
 			</FormControl>
-
-			<div className="flex flex-row items-center">
-				<hr className="flex-1" />
-				<span className="mx-4 text-gray-400">Or Login With</span>
-				<hr className="flex-1" />
-			</div>
-			<div className="flex flex-row gap-4 justify-center my-6">
-				<div id="loginDiv"></div>
-			</div>
-
-			<div className="text-center text-gray-400">
-				Dont have an account?
-				{}{' '}
-				<Link to="/signup" className="underline text-gray-500">
-					Create one!
-				</Link>
-			</div>
 		</div>
 	);
 };

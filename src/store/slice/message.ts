@@ -30,9 +30,9 @@ const initialState: MessageState = {
 
 export const addMessageTaskToQueue = createAsyncThunk(
 	'message/addMessageTaskToQueue',
-	async (data: { messages: Message[]; userId: number; token: string }) => {
+	async (data: { messages: Message[]; userSub: string; token: string }) => {
 		try {
-			const response = await addMessageTaskToQueueService(data.messages, data.userId, data.token);
+			const response = await addMessageTaskToQueueService(data.messages, data.userSub, data.token);
 			return response.data;
 		} catch (error: any) {
 			console.log('error', error);

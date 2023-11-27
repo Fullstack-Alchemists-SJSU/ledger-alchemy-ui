@@ -12,6 +12,8 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import { clearUser } from '../../store/slice/user';
+import { useAuth0 } from '@auth0/auth0-react';
+import { log } from 'console';
 
 const Navbar = () => {
 	const [open, setOpen] = useState(true);
@@ -24,11 +26,12 @@ const Navbar = () => {
 		{ name: 'Talk to Alchemo', link: '/chat', icon: BsFillChatDotsFill },
 		{ name: 'Settings', link: '/settings', icon: IoSettings, margin: true },
 		{
-			name: `${user?.firstName} ${user?.lastName}`,
+			name: user?.name,
 			link: '/profile',
 			icon: PiUserCircleFill,
 		},
 	]);
+	const { logout } = useAuth0();
 
 	const dispatch = useDispatch();
 
@@ -73,7 +76,10 @@ const Navbar = () => {
 
 					<div
 						className="group flex items-center text-sm  gap-3.5 font-medium p-2 hover:bg-gray-800 rounded-md cursor-pointer"
-						onClick={() => dispatch(clearUser())}
+						onClick={() => {
+							logout();
+							dispatch(clearUser());
+						}}
 					>
 						<div>{React.createElement(ImExit, { size: '20' })}</div>
 						<h2

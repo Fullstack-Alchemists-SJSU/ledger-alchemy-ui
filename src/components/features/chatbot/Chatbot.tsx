@@ -16,7 +16,7 @@ const Chatbot = () => {
 	const dispatch = useDispatch();
 
 	const handleNewChat = () => {
-		dispatch(createNewChat(user!!.id) as any);
+		dispatch(createNewChat({ userSub: user!!.sub, token: user!!.token }) as any);
 	};
 
 	useEffect(() => {

@@ -3,14 +3,14 @@ import NetworkState from '../networkstate';
 import { loginService, registerService, updateProfileService } from '../../services/user';
 
 export type User = {
-	id: number;
-	firstName: string;
-	lastName: string;
-	email: string;
-	phone: string;
-	registrationType: string;
-	googleId: string;
 	token: string;
+	email: string;
+	email_verified: string;
+	name: string;
+	nickname: string;
+	picture: string;
+	sub: string;
+	updated_at: string;
 };
 
 export type UserState = {
@@ -48,18 +48,15 @@ export const register = createAsyncThunk(
 	}
 );
 
-export const updateProfile = createAsyncThunk(
-	'user/updateProfile',
-	async (user: { firstName: string; lastName: string; email: string; phone: string; id: number; token: string }) => {
-		try {
-			const response = await updateProfileService(user);
-			return response.data;
-		} catch (error: any) {
-			console.log('error', error);
-			throw Error(error.response.data.message);
-		}
+export const updateProfile = createAsyncThunk('user/updateProfile', async (user: User) => {
+	try {
+		const response = await updateProfileService(user);
+		return response.data;
+	} catch (error: any) {
+		console.log('error', error);
+		throw Error(error.response.data.message);
 	}
-);
+});
 
 const userSlice = createSlice({
 	name: 'user',
