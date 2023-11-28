@@ -2,12 +2,12 @@ import axios from 'axios';
 import { ChatEndpoints } from './url-constants';
 import { Message } from '../store/slice/message';
 
-export const createNewChatService = (userId: number) => {
-	return axios.post(ChatEndpoints.CREATE_CHAT, { user: userId });
+export const createNewChatService = (userSub: string, token: string) => {
+	return axios.post(ChatEndpoints.CREATE_CHAT, { user: userSub }, { headers: { Authorization: `Bearer ${token}` } });
 };
 
-export const getChatsByUserIdService = (userId: number) => {
-	return axios.get(ChatEndpoints.GET_CHATS_BY_USER(userId));
+export const getChatsByUserIdService = (userSub: string) => {
+	return axios.get(ChatEndpoints.GET_CHATS_BY_USER(userSub));
 };
 
 export const deleteChatByIdService = (chatId: number) => {

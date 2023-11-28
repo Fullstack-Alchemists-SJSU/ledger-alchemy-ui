@@ -14,11 +14,8 @@ const Form = ({ isEdit, onSuccess }: FormProps) => {
 	var { user, networkState, error } = useSelector((state: RootState) => state.rootReducer.user);
 	const [updatedUser, setUpdatedUser] = useState(user);
 	const [errors, setErrors] = useState({
-		firstName: '',
-		lastName: '',
-		phone: '',
+		name: '',
 		email: '',
-		password: '',
 	});
 
 	const dispatch = useDispatch();
@@ -29,9 +26,9 @@ const Form = ({ isEdit, onSuccess }: FormProps) => {
 		}
 	}, [networkState]);
 
-	const handleFirstNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setUpdatedUser((user) => ({ ...(updatedUser as any), firstName: e.target.value }));
-		setErrors((errors) => ({ ...errors, firstName: '' }));
+	const handlenameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setUpdatedUser((user) => ({ ...(updatedUser as any), name: e.target.value }));
+		setErrors((errors) => ({ ...errors, name: '' }));
 	};
 
 	const handleLastNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,11 +47,7 @@ const Form = ({ isEdit, onSuccess }: FormProps) => {
 	};
 
 	const hasUserChanged = () => {
-		if (user?.firstName !== updatedUser?.firstName) {
-			return true;
-		} else if (user?.lastName !== updatedUser?.lastName) {
-			return true;
-		} else if (user?.phone !== updatedUser?.phone) {
+		if (user?.name !== updatedUser?.name) {
 			return true;
 		} else if (user?.email !== updatedUser?.email) {
 			return true;
@@ -64,12 +57,8 @@ const Form = ({ isEdit, onSuccess }: FormProps) => {
 	};
 
 	const handleUpdateClick = () => {
-		if (!updatedUser?.firstName || updatedUser?.firstName.length < 3) {
-			setErrors((errors) => ({ ...errors, firstName: 'First name must be at least 3 characters.' }));
-		} else if (!updatedUser?.lastName || updatedUser?.lastName.length < 3) {
-			setErrors((errors) => ({ ...errors, lastName: 'Last name must be at least 3 characters.' }));
-		} else if (!updatedUser?.phone || updatedUser?.phone.length < 10) {
-			setErrors((errors) => ({ ...errors, phone: 'Phone must be at least 10 characters.' }));
+		if (!updatedUser?.name || updatedUser?.name.length < 3) {
+			setErrors((errors) => ({ ...errors, name: 'First name must be at least 3 characters.' }));
 		} else if (
 			!updatedUser?.email ||
 			updatedUser?.email.length < 3 ||
@@ -85,44 +74,19 @@ const Form = ({ isEdit, onSuccess }: FormProps) => {
 		<div className="flex flex-1 flex-col px-0 md:px-[5rem]">
 			{error && <Error text={error} />}
 			<div className="flex flex-row gap-2 mb-4">
-				<FormControl isInvalid={!!errors.firstName}>
-					<FormLabel>First Name</FormLabel>
+				<FormControl isInvalid={!!errors.name}>
+					<FormLabel>Name</FormLabel>
 					<Input
 						bgColor={isEdit ? 'white' : 'gray.100'}
 						disabled={!isEdit}
 						borderColor="gray"
 						type="text"
-						value={updatedUser?.firstName}
-						onChange={handleFirstNameChange}
+						value={updatedUser?.name}
+						onChange={handlenameChange}
 					/>
-					<FormErrorMessage className="text-start">{errors.firstName}</FormErrorMessage>
-				</FormControl>
-				<FormControl isInvalid={!!errors.lastName}>
-					<FormLabel>Last Name</FormLabel>
-					<Input
-						bgColor={isEdit ? 'white' : 'gray.100'}
-						disabled={!isEdit}
-						borderColor="gray"
-						type="text"
-						value={updatedUser?.lastName}
-						onChange={handleLastNameChange}
-					/>
-					<FormErrorMessage className="text-start">{errors.lastName}</FormErrorMessage>
+					<FormErrorMessage className="text-start">{errors.name}</FormErrorMessage>
 				</FormControl>
 			</div>
-			<FormControl isInvalid={!!errors.phone} className="mb-4">
-				<FormLabel>Phone</FormLabel>
-				<Input
-					bgColor={isEdit ? 'white' : 'gray.100'}
-					disabled={!isEdit}
-					borderColor="gray"
-					type="tel"
-					value={updatedUser?.phone}
-					onChange={handlePhoneChange}
-				/>
-				<FormHelperText className="text-start">We never share your phone.</FormHelperText>
-				<FormErrorMessage className="text-start">{errors.phone}</FormErrorMessage>
-			</FormControl>
 			<FormControl isInvalid={!!errors.email} className="mb-4">
 				<FormLabel>Email</FormLabel>
 				<Input

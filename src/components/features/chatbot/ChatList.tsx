@@ -20,13 +20,13 @@ const ChatList = () => {
 
 	useEffect(() => {
 		if (chats.length === 0) {
-			dispatch(getChatsByUserId(user!!.id) as any);
+			dispatch(getChatsByUserId(user!!.sub) as any);
 		}
 
 		if (unSyncedMessages && unSyncedMessages.length > 0) {
 			console.log('dispatching');
 			dispatch(
-				addMessageTaskToQueue({ messages: unSyncedMessages, userId: user!!.id, token: user!!.token }) as any
+				addMessageTaskToQueue({ messages: unSyncedMessages, userSub: user!!.sub, token: user!!.token }) as any
 			);
 			unSyncedMessages = [];
 		}

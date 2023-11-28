@@ -48,19 +48,22 @@ export const systemPromptChat = (timestamp: string, chat: number): Message => ({
 	timestamp,
 });
 
-export const createNewChat = createAsyncThunk('chat/createNewChat', async (userId: number) => {
-	try {
-		const response = await createNewChatService(userId);
-		return response.data;
-	} catch (error: any) {
-		console.log('error', error);
-		throw Error(error.response.data.message);
+export const createNewChat = createAsyncThunk(
+	'chat/createNewChat',
+	async (data: { userSub: string; token: string }) => {
+		try {
+			const response = await createNewChatService(data.userSub, data.token);
+			return response.data;
+		} catch (error: any) {
+			console.log('error', error);
+			throw Error(error.response.data.message);
+		}
 	}
-});
+);
 
-export const getChatsByUserId = createAsyncThunk('chat/getChatsByUserId', async (userId: number, { dispatch }) => {
+export const getChatsByUserId = createAsyncThunk('chat/getChatsByUserId', async (userSub: string, { dispatch }) => {
 	try {
-		const response = await getChatsByUserIdService(userId);
+		const response = await getChatsByUserIdService(userSub);
 		const messages = response.data
 			.map((chat: Chat & { messages: Message[] }) =>
 				chat.messages && chat.messages.length > 0 ? chat.messages : []

@@ -12,6 +12,7 @@ import MyWallet from './components/features/wallet/wallet';
 import Settings from './components/features/settings/settings';
 import Goals from './components/features/goals/goals';
 import RecentTransactions from './components/features/recent-transactions/recent-transactions';
+import { useEffect } from 'react';
 
 function App() {
 	return (
