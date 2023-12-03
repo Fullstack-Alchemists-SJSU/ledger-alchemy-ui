@@ -1,5 +1,5 @@
 const URLConstantsBase = {
-	BASE_URL: 'http://localhost:3100',
+	BASE_URL: 'https://129.159.45.123',
 };
 
 const V1Routes = {
@@ -26,8 +26,4 @@ export const ChatEndpoints = {
 	 * Message Queue Routes
 	 */
 	ADD_TASK_TO_QUEUE: `${V1Routes.BASE_V1}/message-queue`,
-};
-
-export const SocketEndpoint = {
-	BASE_URL: 'http://localhost:3333',
 };
