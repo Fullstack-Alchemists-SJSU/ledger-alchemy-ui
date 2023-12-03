@@ -6,10 +6,8 @@ import { Chat, deleteChatById, getChatsByUserId } from '../../../store/slice/cha
 import { useNavigate } from 'react-router-dom';
 import { MdDelete } from 'react-icons/md';
 import { Message, addMessageTaskToQueue } from '../../../store/slice/message';
-import socket from '../../../services/socket';
 
 const ChatList = () => {
-	const [socketConnected, setSocketConnected] = useState(socket.connected);
 	const user = useSelector((state: RootState) => state.rootReducer.user.user);
 	const { chats, networkState, error } = useSelector((state: RootState) => state.rootReducer.chat);
 	let unSyncedMessages = useSelector((state: RootState) =>
