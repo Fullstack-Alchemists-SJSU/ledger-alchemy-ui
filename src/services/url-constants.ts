@@ -21,9 +21,5 @@ export const ChatEndpoints = {
 	GET_CHATS_BY_USER: (user: string) => `${V1Routes.BASE_V1}/chat/user/${user}`,
 	COMPLETION: `${V1Routes.BASE_V1}/chat/stream`,
 	DELETE_CHAT_BY_ID: (chatId: number) => `${V1Routes.BASE_V1}/chat/${chatId}`,
-
-	/**
-	 * Message Queue Routes
-	 */
-	ADD_TASK_TO_QUEUE: `${V1Routes.BASE_V1}/message-queue`,
+	ADD_TASK_TO_QUEUE: `${V1Routes.BASE_V1}/chat/message-queue`,
 };
