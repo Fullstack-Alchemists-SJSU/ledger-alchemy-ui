@@ -3,7 +3,7 @@ import Login from './components/features/login/login';
 import ProtectedRoute from './components/common/protectedroute/protected-route';
 import Signup from './components/features/signup/Signup';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Profile from './components/features/profile/Profile';
+import Profile from './components/features/profile/ProfileComponent';
 import Chatbot from './components/features/chatbot/Chatbot';
 import Conversation from './components/features/chatbot/Conversation';
 import Layout from './components/layout/layout';

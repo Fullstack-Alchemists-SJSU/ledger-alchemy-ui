@@ -1,11 +1,10 @@
 import BaseContainer from '../../common/responsive/BaseContainer';
 import Toolbar from '../../common/toolbar/Toolbar';
 import { Button } from '@chakra-ui/react';
-import Form from './Form';
+import Form from './ProfileForm';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../store/store';
 import { useState } from 'react';
-import { clearUser } from '../../../store/slice/user';
 
 const Profile = () => {
 	const { user } = useSelector((state: RootState) => state.rootReducer.user);
