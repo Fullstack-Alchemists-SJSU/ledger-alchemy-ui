@@ -1,5 +1,5 @@
 const URLConstantsBase = {
-	BASE_URL: 'https://129.159.45.123',
+	BASE_URL: 'http://129.159.45.123',
 };
 
 const V1Routes = {
