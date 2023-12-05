@@ -14,6 +14,8 @@ import { RootState } from '../../store/store';
 import { clearUser } from '../../store/slice/user';
 import { useAuth0 } from '@auth0/auth0-react';
 import { log } from 'console';
+import { clearChat } from '../../store/slice/chat';
+import { clearMessages } from '../../store/slice/message';
 
 const Navbar = () => {
 	const [open, setOpen] = useState(true);
@@ -77,8 +79,10 @@ const Navbar = () => {
 					<div
 						className="group flex items-center text-sm  gap-3.5 font-medium p-2 hover:bg-gray-800 rounded-md cursor-pointer"
 						onClick={() => {
-							logout();
+							logout({ returnTo: window.location.origin } as any);
 							dispatch(clearUser());
+							dispatch(clearChat({}));
+							dispatch(clearMessages());
 						}}
 					>
 						<div>{React.createElement(ImExit, { size: '20' })}</div>

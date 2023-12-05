@@ -97,7 +97,11 @@ export const deleteChatById = createAsyncThunk('chat/deleteChatById', async (cha
 const chatSlice: Slice = createSlice({
 	name: 'chat',
 	initialState,
-	reducers: {},
+	reducers: {
+		clearChat() {
+			return initialState;
+		},
+	},
 	extraReducers: (builder) => {
 		builder.addCase(createNewChat.pending, (state) => {
 			state.networkState = 'loading';
@@ -136,4 +140,5 @@ const chatSlice: Slice = createSlice({
 	},
 });
 
+export const { clearChat } = chatSlice.actions;
 export default chatSlice.reducer;

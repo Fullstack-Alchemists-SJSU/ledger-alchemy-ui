@@ -35,7 +35,7 @@ const ChatList = () => {
 	};
 
 	return (
-		<div className="h-full w-full bg-white">
+		<div className="h-full w-full bg-white max-h-screen overflow-auto">
 			<TableContainer>
 				<Table variant="striped">
 					<TableCaption>Say Hi to Alchemo! Your personal financial advisor!</TableCaption>

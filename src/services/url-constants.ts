@@ -1,5 +1,5 @@
 const URLConstantsBase = {
-	BASE_URL: 'http://129.159.45.123',
+	BASE_URL: 'https://app.ledgeralchemy.online',
 };
 
 const V1Routes = {
