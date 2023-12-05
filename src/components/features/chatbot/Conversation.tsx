@@ -66,8 +66,6 @@ const Conversation = () => {
 		const reader = response.body.getReader();
 		const decoder = new TextDecoder();
 
-		let messageStream = '';
-
 		const timestamp = Date.now().toString();
 
 		let messageText = '';

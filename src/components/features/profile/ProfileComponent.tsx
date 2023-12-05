@@ -2,14 +2,14 @@ import BaseContainer from '../../common/responsive/BaseContainer';
 import Toolbar from '../../common/toolbar/Toolbar';
 import { Button } from '@chakra-ui/react';
 import Form from './ProfileForm';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { RootState } from '../../../store/store';
 import { useState } from 'react';
 
 const Profile = () => {
 	const { user } = useSelector((state: RootState) => state.rootReducer.user);
 	const [edit, setEdit] = useState(false);
-	const dispatch = useDispatch();
+
 	return (
 		<BaseContainer>
 			<div className="flex flex-col flex-1">

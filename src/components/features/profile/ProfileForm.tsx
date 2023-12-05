@@ -31,16 +31,6 @@ const Form = ({ isEdit, onSuccess }: FormProps) => {
 		setErrors((errors) => ({ ...errors, name: '' }));
 	};
 
-	const handleLastNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setUpdatedUser((user) => ({ ...(updatedUser as any), lastName: e.target.value }));
-		setErrors((errors) => ({ ...errors, lastName: '' }));
-	};
-
-	const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setUpdatedUser((user) => ({ ...(updatedUser as any), phone: e.target.value }));
-		setErrors((errors) => ({ ...errors, phone: '' }));
-	};
-
 	const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setUpdatedUser((user) => ({ ...(updatedUser as any), email: e.target.value }));
 		setErrors((errors) => ({ ...errors, email: '' }));

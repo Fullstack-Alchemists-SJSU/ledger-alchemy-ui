@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../store/store';
 import { IconButton, Table, TableCaption, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Chat, deleteChatById, getChatsByUserId } from '../../../store/slice/chat';
 import { useNavigate } from 'react-router-dom';
 import { MdDelete } from 'react-icons/md';
@@ -9,7 +9,7 @@ import { Message, addMessageTaskToQueue } from '../../../store/slice/message';
 
 const ChatList = () => {
 	const user = useSelector((state: RootState) => state.rootReducer.user.user);
-	const { chats, networkState, error } = useSelector((state: RootState) => state.rootReducer.chat);
+	const { chats, networkState } = useSelector((state: RootState) => state.rootReducer.chat);
 	let unSyncedMessages = useSelector((state: RootState) =>
 		state.rootReducer.messages.messages.filter((message: Message) => message && message.id === 0)
 	);
@@ -26,7 +26,6 @@ const ChatList = () => {
 			dispatch(
 				addMessageTaskToQueue({ messages: unSyncedMessages, userSub: user!!.sub, token: user!!.token }) as any
 			);
-			unSyncedMessages = [];
 		}
 	}, []);
 

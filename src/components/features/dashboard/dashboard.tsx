@@ -1,6 +1,3 @@
-import React from 'react';
-import Navbar from '../../layout/nav';
-
 function Dashboard() {
 	return (
 		<div>

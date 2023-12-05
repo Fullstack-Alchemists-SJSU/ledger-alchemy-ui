@@ -13,14 +13,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import { clearUser } from '../../store/slice/user';
 import { useAuth0 } from '@auth0/auth0-react';
-import { log } from 'console';
 import { clearChat } from '../../store/slice/chat';
 import { clearMessages } from '../../store/slice/message';
 
 const Navbar = () => {
 	const [open, setOpen] = useState(true);
 	const user = useSelector((state: RootState) => state.rootReducer.user.user);
-	const [menus, setMenus] = useState([
+	const [menus, _] = useState([
 		{ name: 'Dashboard', link: '/', icon: MdOutlineDashboard },
 		{ name: 'My Wallet', link: '/mywallet', icon: FaWallet },
 		{ name: 'Recent Transactions', link: '/rcttransactions', icon: FaMoneyBillWave },

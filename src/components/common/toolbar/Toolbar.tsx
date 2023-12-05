@@ -1,5 +1,4 @@
 import { Icon } from '@chakra-ui/react';
-import { useEffect } from 'react';
 import { BiArrowBack } from 'react-icons/bi';
 import { useLocation, useNavigate } from 'react-router-dom';
 type ToolbarProps = {

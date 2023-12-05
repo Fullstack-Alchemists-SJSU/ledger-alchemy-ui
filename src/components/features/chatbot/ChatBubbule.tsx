@@ -1,4 +1,3 @@
-import Markdown from 'react-markdown';
 import { Message, Role } from '../../../store/slice/message';
 
 interface ChatBubbleProps {

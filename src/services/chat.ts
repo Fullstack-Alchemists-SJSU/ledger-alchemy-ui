@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { ChatEndpoints } from './url-constants';
-import { Message } from '../store/slice/message';
 
 export const createNewChatService = (userSub: string, token: string) => {
 	return axios.post(ChatEndpoints.CREATE_CHAT, { user: userSub }, { headers: { Authorization: `Bearer ${token}` } });

@@ -1,7 +1,7 @@
 import { Slice, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import NetworkState from '../networkstate';
 import { createNewChatService, deleteChatByIdService, getChatsByUserIdService } from '../../services/chat';
-import message, { Message, Role, setMessages } from './message';
+import { Message, Role, setMessages } from './message';
 
 export type Chat = {
 	id: number;
@@ -86,7 +86,7 @@ export const getChatsByUserId = createAsyncThunk('chat/getChatsByUserId', async 
 
 export const deleteChatById = createAsyncThunk('chat/deleteChatById', async (chatId: number) => {
 	try {
-		const response = await deleteChatByIdService(chatId);
+		await deleteChatByIdService(chatId);
 		return chatId;
 	} catch (error: any) {
 		console.log('error', error);

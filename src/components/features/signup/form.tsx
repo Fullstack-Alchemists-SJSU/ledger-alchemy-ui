@@ -1,4 +1,4 @@
-import { FormControl, FormLabel, Input, Button, FormErrorMessage, FormHelperText, IconButton } from '@chakra-ui/react';
+import { FormControl, FormLabel, Input, Button, FormErrorMessage, FormHelperText } from '@chakra-ui/react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -6,7 +6,6 @@ import { RootState } from '../../../store/store';
 import { register, resetNetworkState } from '../../../store/slice/user';
 import Error from '../../common/error/Error';
 import ModalComponent from '../../common/modal/Modal';
-import { text } from 'stream/consumers';
 import { useNavigate } from 'react-router-dom';
 
 const Form = () => {

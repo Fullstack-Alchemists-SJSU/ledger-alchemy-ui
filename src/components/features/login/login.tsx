@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
-import Form from './form';
 import { Button, Image } from '@chakra-ui/react';
 import Banner from '../signup/assets/banner.png';
 import ResponsiveCenteredCard from '../../common/responsive/ResponsiveCenteredCard';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUser } from '../../../store/slice/user';
@@ -12,7 +11,7 @@ import { RootState } from '../../../store/store';
 const Login = (): JSX.Element => {
 	const [width, _] = useState(window.innerWidth);
 	const { user: storedUser } = useSelector((state: RootState) => state.rootReducer.user);
-	const { loginWithRedirect, user, isLoading, isAuthenticated, getAccessTokenSilently } = useAuth0();
+	const { loginWithRedirect, user, isAuthenticated, getAccessTokenSilently } = useAuth0();
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
