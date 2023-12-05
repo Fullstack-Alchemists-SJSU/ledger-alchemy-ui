@@ -78,7 +78,7 @@ const Navbar = () => {
 					<div
 						className="group flex items-center text-sm  gap-3.5 font-medium p-2 hover:bg-gray-800 rounded-md cursor-pointer"
 						onClick={() => {
-							logout({ returnTo: window.location.origin } as any);
+							logout({ logoutParams: { returnTo: window.location.origin } });
 							dispatch(clearUser());
 							dispatch(clearChat({}));
 							dispatch(clearMessages());
