@@ -20,79 +20,16 @@ function App() {
 				<Routes>
 					<Route path="/login" element={<Login />} />
 					<Route path="/signup" element={<Signup />} />
-					<Route
-						path="/"
-						element={
-							<ProtectedRoute>
-								<Layout />{' '}
-							</ProtectedRoute>
-						}
-					>
+					<Route path="/" element={<ProtectedRoute children={Layout} />}>
 						{/* Nested routes */}
-						<Route
-							index
-							element={
-								<ProtectedRoute>
-									<Dashboard />{' '}
-								</ProtectedRoute>
-							}
-						/>
-						<Route
-							path="mywallet"
-							element={
-								<ProtectedRoute>
-									<MyWallet />{' '}
-								</ProtectedRoute>
-							}
-						/>
-						<Route
-							path="rcttransactions"
-							element={
-								<ProtectedRoute>
-									<RecentTransactions />{' '}
-								</ProtectedRoute>
-							}
-						/>
-						<Route
-							path="goals"
-							element={
-								<ProtectedRoute>
-									<Goals />{' '}
-								</ProtectedRoute>
-							}
-						/>
-						<Route
-							path="settings"
-							element={
-								<ProtectedRoute>
-									<Settings />{' '}
-								</ProtectedRoute>
-							}
-						/>
-						<Route
-							path="/profile"
-							element={
-								<ProtectedRoute>
-									<Profile />
-								</ProtectedRoute>
-							}
-						/>
-						<Route
-							path="/chat"
-							element={
-								// <ProtectedRoute>
-								<Chatbot />
-								//</ProtectedRoute>
-							}
-						/>
-						<Route
-							path="/chat/:id"
-							element={
-								// <ProtectedRoute>
-								<Conversation />
-								//</ProtectedRoute>
-							}
-						/>
+						<Route index element={<ProtectedRoute children={Dashboard} />} />
+						<Route path="mywallet" element={<ProtectedRoute children={MyWallet} />} />
+						<Route path="rcttransactions" element={<ProtectedRoute children={RecentTransactions} />} />
+						<Route path="goals" element={<ProtectedRoute children={Goals} />} />
+						<Route path="settings" element={<ProtectedRoute children={Settings} />} />
+						<Route path="/profile" element={<ProtectedRoute children={Profile} />} />
+						<Route path="/chat" element={<ProtectedRoute children={Chatbot} />} />
+						<Route path="/chat/:id" element={<ProtectedRoute children={Conversation} />} />
 					</Route>
 				</Routes>
 			</BrowserRouter>

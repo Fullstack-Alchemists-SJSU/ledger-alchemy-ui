@@ -2,7 +2,7 @@ const URLConstantsBase = {
 	BASE_URL: 'https://app.ledgeralchemy.online',
 };
 
-const V1Routes = {
+export const V1Routes = {
 	BASE_V1: `${URLConstantsBase.BASE_URL}/api/v1`,
 };
 

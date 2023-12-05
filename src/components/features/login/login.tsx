@@ -16,16 +16,11 @@ const Login = (): JSX.Element => {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		if (storedUser) {
-			navigate('/');
-		}
-	}, [storedUser]);
-
-	useEffect(() => {
 		if (user) {
 			(async () => {
 				const token = await getAccessTokenSilently();
 				dispatch(setUser({ ...user, token }));
+				navigate('/');
 			})();
 		}
 	}, [user]);
