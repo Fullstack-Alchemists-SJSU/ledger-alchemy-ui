@@ -18,7 +18,7 @@ const ChatList = () => {
 
 	useEffect(() => {
 		if (chats.length === 0) {
-			dispatch(getChatsByUserId(user!!.sub) as any);
+			dispatch(getChatsByUserId({ userSub: user!!.sub, token: user?.token as string }) as any);
 		}
 
 		if (unSyncedMessages && unSyncedMessages.length > 0) {
@@ -57,7 +57,11 @@ const ChatList = () => {
 										icon={<MdDelete />}
 										aria-label="Delete Chat"
 										className="invisible group-hover:visible"
-										onClick={() => dispatch(deleteChatById(chat.id) as any)}
+										onClick={() =>
+											dispatch(
+												deleteChatById({ chatId: chat.id, token: user?.token as string }) as any
+											)
+										}
 									/>
 								</Td>
 							</Tr>
