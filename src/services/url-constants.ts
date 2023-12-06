@@ -15,15 +15,15 @@ export const UserEndpoints = {
 };
 
 export const AccountEndpoints = {
-	LINK_TOKEN: `${V1Routes.BASE_V1}/account/`,
+	LINK_TOKEN: `${V1Routes.BASE_V1}/account`,
 	ACCESS_TOKEN: `${V1Routes.BASE_V1}/account/exchange_public_token`,
 	GET_ACCOUNTS_BY_USER: `${V1Routes.BASE_V1}/account/get_accounts`,
 };
 
 export const TransactionEndpoints = {
-	GET_TRANSACTIONS: `${V1Routes.BASE_V1}/transaction/get_user_transactions/`,
-	SYNC_TRANSACTIONS: `${V1Routes.BASE_V1}/transaction/sync_user_transactions/`,
-	READ_TRANSACITONS: `${V1Routes.BASE_V1}/transaction/read_user_transactions/`,
+	GET_TRANSACTIONS: `${V1Routes.BASE_V1}/transaction/get_user_transactions`,
+	SYNC_TRANSACTIONS: `${V1Routes.BASE_V1}/transaction/sync_user_transactions`,
+	READ_TRANSACITONS: `${V1Routes.BASE_V1}/transaction/read_user_transactions`,
 };
 
 export const ChatEndpoints = {
