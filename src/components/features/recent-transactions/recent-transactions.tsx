@@ -26,7 +26,7 @@ import {
 	FormLabel,
 } from '@chakra-ui/react';
 import { InfoIcon, TriangleUpIcon, TriangleDownIcon } from '@chakra-ui/icons';
-import { Transaction, getTransactionsByUserId, syncTransactionsByUserId } from '../../../store/slice/transaction';
+import { Location, Transaction, getTransactionsByUserId, syncTransactionsByUserId } from '../../../store/slice/transaction';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../store/store';
 
@@ -41,8 +41,17 @@ function RecentTransactions() {
 	const [activeButton, setActiveButton] = useState('');
 	const [isCustomRange, setIsCustomRange] = useState(false);
 	const [dateError, setDateError] = useState('');
-	const [sortField, setSortField] = useState<keyof Transaction | ''>('');
-	const [sortDirection, setSortDirection] = useState('');
+	// const [sortField, setSortField] = useState<keyof Transaction | ''>('');
+	// const [sortDirection, setSortDirection] = useState('');
+	const { isOpen, onOpen, onClose } = useDisclosure(); 	// Disclosure for AlertDialog
+	const cancelRef = React.useRef(null);
+	const { networkState, error } = useSelector((state: RootState) => state.rootReducer.transactionReducer);
+	const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+
+	const onSelectTransaction = (transaction: Transaction) => {
+		setSelectedTransaction(transaction);
+		onOpen(); // Open the alert dialog
+	};
 
 	useEffect(() => {
 		// Dispatch actions to get transactions
@@ -53,12 +62,6 @@ function RecentTransactions() {
 	useEffect(() => {
 		setFilteredTransactions(transactions);
 	}, [transactions]);
-
-	// Disclosure for AlertDialog
-	const { isOpen, onOpen, onClose } = useDisclosure();
-	const cancelRef = React.useRef(null);
-
-	const { networkState, error } = useSelector((state: RootState) => state.rootReducer.transactionReducer);
 
 	const handleButtonClick = (period: React.SetStateAction<string>) => {
 		setIsCustomRange(false);
@@ -75,7 +78,7 @@ function RecentTransactions() {
 		filterTransactions(startDate, endDate);
 	};
 
-	const filterTransactions = (start: string | number | Date, end: string | number | Date) => {
+	const filterTransactions = (start: any, end: any) => {
 		const filtered = transactions.filter((trans) => {
 			const transDate = new Date(trans.date);
 			return transDate >= new Date(start) && transDate <= new Date(end);
@@ -104,28 +107,45 @@ function RecentTransactions() {
 		return true;
 	};
 
-	const sortedTransactions = useMemo(() => {
-		if (!sortField) return filteredTransactions;
+	// const sortedTransactions = useMemo(() => {
+	// 	console.log('sortField form sortedTransactions : ', sortField);
+	// 	if (!sortField) return filteredTransactions;
 
-		const sorted = [...filteredTransactions].sort((a, b) => {
-			const valueA = a[sortField] || '';
-			const valueB = b[sortField] || '';
+	// 	const sorted = [...filteredTransactions].sort((a, b) => {
+	// 		const valueA = a[sortField as keyof Transaction] || '';
+	// 		const valueB = b[sortField as keyof Transaction] || '';
 
-			if (valueA < valueB) return sortDirection === 'asc' ? -1 : 1;
-			if (valueA > valueB) return sortDirection === 'asc' ? 1 : -1;
-			return 0;
-		});
+	// 		if (valueA < valueB) return sortDirection === 'asc' ? -1 : 1;
+	// 		if (valueA > valueB) return sortDirection === 'asc' ? 1 : -1;
+	// 		return 0;
+	// 	});
 
-		return sorted;
-	}, [filteredTransactions, sortField, sortDirection]);
+	// 	return sorted;
+	// }, [filteredTransactions, sortField, sortDirection]);
 
-	const handleSort = (field: React.SetStateAction<string>) => {
-		setSortField(field as any);
-		setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-	};
+	// const handleSort = (field: keyof Transaction | '') => {
+	// 	if (sortField === field) {
+	// 		setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+	// 	} else {
+	// 		setSortField(field);
+	// 		setSortDirection('asc');
+	// 	}
+	// };
 
-	const getSortIcon = (field: string) => {
-		return sortField === field ? sortDirection === 'asc' ? <TriangleUpIcon /> : <TriangleDownIcon /> : null;
+	// const getSortIcon = (field: string) => {
+	// 	return sortField === field ? sortDirection === 'asc' ? <TriangleUpIcon /> : <TriangleDownIcon /> : null;
+	// };
+
+	// Function to generate a Google Maps URL from a Location object
+	const generateMapsUrl = (location: Location) => {
+		if (location.lat && location.lon) {
+			// Use latitude and longitude if available
+			return `https://www.google.com/maps/?q=${location.lat},${location.lon}`;
+		} else if (location.address) {
+			// Alternatively use the address
+			return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location.address)}`;
+		}
+		return null;
 	};
 
 	return (
@@ -178,16 +198,21 @@ function RecentTransactions() {
 					<Thead>
 						<Tr>
 							<Th>Sr.</Th>
-							<Th onClick={() => handleSort('date')}>Date {getSortIcon('date')}</Th>
-							<Th onClick={() => handleSort('description')}>Description {getSortIcon('description')}</Th>
+							{/* <Th onClick={() => handleSort('date')}>Date {getSortIcon('date')}</Th>
+							<Th onClick={() => handleSort('name')}>Description {getSortIcon('name')}</Th>
 							<Th isNumeric onClick={() => handleSort('amount')}>
 								Amount ($) {getSortIcon('amount')}
+							</Th> */}
+							<Th >Date </Th>
+							<Th >Description </Th>
+							<Th isNumeric >
+								Amount($)
 							</Th>
 							<Th>Info</Th>
 						</Tr>
 					</Thead>
 					<Tbody>
-						{sortedTransactions.map((trans, index) => (
+						{filteredTransactions.map((trans, index) => (
 							<Tr key={trans.account_id}>
 								<Td>{index + 1}</Td>
 								<Td>{trans.date}</Td>
@@ -199,7 +224,7 @@ function RecentTransactions() {
 									{trans.amount}
 								</Td>
 								<Td>
-									<IconButton aria-label="More info" icon={<InfoIcon />} onClick={onOpen} />
+									<IconButton aria-label="More info" icon={<InfoIcon />} onClick={() => { onOpen(); onSelectTransaction(trans); }} />
 								</Td>
 							</Tr>
 						))}
@@ -213,7 +238,38 @@ function RecentTransactions() {
 						<AlertDialogHeader fontSize="lg" fontWeight="bold">
 							Transaction Details
 						</AlertDialogHeader>
-						<AlertDialogBody>{/* Transaction details go here */}</AlertDialogBody>
+						<AlertDialogBody>{selectedTransaction ? (
+							<Stack spacing={3}>
+								{selectedTransaction.logo_url && (<img src={selectedTransaction.logo_url} alt="Merchant Logo" style={{ maxWidth: '100px' }} />)}
+								<Text><strong>Name:</strong> {selectedTransaction.name}</Text>
+								<Text><strong>Amount:</strong> ${selectedTransaction.amount}</Text>
+								<Text><strong>Date:</strong> {selectedTransaction.date}</Text>
+								<Text><strong>Type:</strong> {selectedTransaction.transaction_type}</Text>
+								<Text><strong>Merchant:</strong> {selectedTransaction.merchant_name || 'N/A'}</Text>
+								<Text><strong>Payment Channel:</strong> {selectedTransaction.payment_channel}</Text>
+								<Text><strong>Category:</strong> {selectedTransaction.category.join(', ')}</Text>
+								<Text><strong>Pending:</strong> {selectedTransaction.pending ? 'Yes' : 'No'}</Text>
+								<Text><strong>Authorized Date:</strong> {selectedTransaction.authorized_date || 'N/A'}</Text>
+								<Text><strong>Currency:</strong> {selectedTransaction.iso_currency_code}</Text>
+								{selectedTransaction.website && <Text><strong>Website:</strong> {selectedTransaction.website}</Text>}
+								{selectedTransaction.location && (
+									<div>
+										<Text>Location:</Text>
+										<Text>{selectedTransaction.location.address || 'N/A'}</Text>
+										<Text>{selectedTransaction.location.city || 'N/A'}</Text>
+										<Text>{selectedTransaction.location.region || 'N/A'}</Text>
+										<Text>{selectedTransaction.location.country || 'N/A'}</Text>
+										{generateMapsUrl(selectedTransaction.location) && (
+											<a ref={generateMapsUrl(selectedTransaction.location)} target="_blank" rel="noopener noreferrer">
+												View on Maps
+											</a>
+										)}
+									</div>
+								)}
+							</Stack>
+						) : (
+							<Text>No transaction selected</Text>
+						)}</AlertDialogBody>
 						<AlertDialogFooter>
 							<Button ref={cancelRef} onClick={onClose}>
 								Close
