@@ -1,5 +1,6 @@
 const URLConstantsBase = {
-	BASE_URL: 'https://app.ledgeralchemy.online',
+	//BASE_URL: 'https://app.ledgeralchemy.online',
+	BASE_URL: 'http://localhost:3100',
 };
 
 export const V1Routes = {

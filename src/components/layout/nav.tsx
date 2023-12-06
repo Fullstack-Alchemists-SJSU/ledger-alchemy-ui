@@ -23,7 +23,6 @@ const Navbar = () => {
 		{ name: 'Dashboard', link: '/', icon: MdOutlineDashboard },
 		{ name: 'My Wallet', link: '/mywallet', icon: FaWallet },
 		{ name: 'Recent Transactions', link: '/rcttransactions', icon: FaMoneyBillWave },
-		{ name: 'Set My Goals ', link: '/goals', icon: GoGoal },
 		{ name: 'Talk to Alchemo', link: '/chat', icon: BsFillChatDotsFill },
 		{ name: 'Settings', link: '/settings', icon: IoSettings, margin: true },
 		{

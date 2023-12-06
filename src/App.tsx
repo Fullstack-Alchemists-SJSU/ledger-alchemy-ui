@@ -10,7 +10,6 @@ import Layout from './components/layout/layout';
 import Dashboard from './components/features/dashboard/dashboard';
 import MyWallet from './components/features/wallet/wallet';
 import Settings from './components/features/settings/settings';
-import Goals from './components/features/goals/goals';
 import RecentTransactions from './components/features/recent-transactions/recent-transactions';
 
 function App() {
@@ -25,7 +24,6 @@ function App() {
 						<Route index element={<ProtectedRoute children={Dashboard} />} />
 						<Route path="mywallet" element={<ProtectedRoute children={MyWallet} />} />
 						<Route path="rcttransactions" element={<ProtectedRoute children={RecentTransactions} />} />
-						<Route path="goals" element={<ProtectedRoute children={Goals} />} />
 						<Route path="settings" element={<ProtectedRoute children={Settings} />} />
 						<Route path="/profile" element={<ProtectedRoute children={Profile} />} />
 						<Route path="/chat" element={<ProtectedRoute children={Chatbot} />} />
