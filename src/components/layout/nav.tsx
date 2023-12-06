@@ -15,6 +15,8 @@ import { clearUser } from '../../store/slice/user';
 import { useAuth0 } from '@auth0/auth0-react';
 import { clearChat } from '../../store/slice/chat';
 import { clearMessages } from '../../store/slice/message';
+import { clearAccount } from '../../store/slice/account';
+import { clearTransactions } from '../../store/slice/transaction';
 
 const Navbar = () => {
 	const [open, setOpen] = useState(true);
@@ -79,8 +81,10 @@ const Navbar = () => {
 						onClick={() => {
 							logout({ logoutParams: { returnTo: window.location.origin } });
 							dispatch(clearUser());
+							dispatch(clearAccount({}));
 							dispatch(clearChat({}));
 							dispatch(clearMessages());
+							dispatch(clearTransactions());
 						}}
 					>
 						<div>{React.createElement(ImExit, { size: '20' })}</div>
