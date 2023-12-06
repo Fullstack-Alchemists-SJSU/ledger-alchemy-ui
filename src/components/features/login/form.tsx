@@ -1,9 +1,9 @@
-import { FormControl, FormLabel, Input, Button, FormErrorMessage, FormHelperText, IconButton } from '@chakra-ui/react';
+import { FormControl, FormLabel, Input, Button, FormErrorMessage } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
 import useGoogleLogin from '../../../hooks/useGoogleLogin';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../store/store';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { login } from '../../../store/slice/user';
 import Error from '../../common/error/Error';
 

@@ -1,17 +1,15 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../store/store';
 import { IconButton, Table, TableCaption, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Chat, deleteChatById, getChatsByUserId } from '../../../store/slice/chat';
 import { useNavigate } from 'react-router-dom';
 import { MdDelete } from 'react-icons/md';
 import { Message, addMessageTaskToQueue } from '../../../store/slice/message';
-import socket from '../../../services/socket';
 
 const ChatList = () => {
-	const [socketConnected, setSocketConnected] = useState(socket.connected);
 	const user = useSelector((state: RootState) => state.rootReducer.user.user);
-	const { chats, networkState, error } = useSelector((state: RootState) => state.rootReducer.chat);
+	const { chats, networkState } = useSelector((state: RootState) => state.rootReducer.chat);
 	let unSyncedMessages = useSelector((state: RootState) =>
 		state.rootReducer.messages.messages.filter((message: Message) => message && message.id === 0)
 	);
@@ -20,7 +18,7 @@ const ChatList = () => {
 
 	useEffect(() => {
 		if (chats.length === 0) {
-			dispatch(getChatsByUserId(user!!.sub) as any);
+			dispatch(getChatsByUserId({ userSub: user!!.sub, token: user?.token as string }) as any);
 		}
 
 		if (unSyncedMessages && unSyncedMessages.length > 0) {
@@ -28,7 +26,6 @@ const ChatList = () => {
 			dispatch(
 				addMessageTaskToQueue({ messages: unSyncedMessages, userSub: user!!.sub, token: user!!.token }) as any
 			);
-			unSyncedMessages = [];
 		}
 	}, []);
 
@@ -37,7 +34,7 @@ const ChatList = () => {
 	};
 
 	return (
-		<div className="h-full w-full bg-white">
+		<div className="h-full w-full bg-white max-h-screen overflow-auto">
 			<TableContainer>
 				<Table variant="striped">
 					<TableCaption>Say Hi to Alchemo! Your personal financial advisor!</TableCaption>
@@ -60,7 +57,11 @@ const ChatList = () => {
 										icon={<MdDelete />}
 										aria-label="Delete Chat"
 										className="invisible group-hover:visible"
-										onClick={() => dispatch(deleteChatById(chat.id) as any)}
+										onClick={() =>
+											dispatch(
+												deleteChatById({ chatId: chat.id, token: user?.token as string }) as any
+											)
+										}
 									/>
 								</Td>
 							</Tr>

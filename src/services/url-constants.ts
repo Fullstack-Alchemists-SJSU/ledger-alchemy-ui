@@ -1,8 +1,9 @@
 const URLConstantsBase = {
-	BASE_URL: 'http://localhost:3200',
+	BASE_URL: 'https://app.ledgeralchemy.online',
+	//BASE_URL: 'http://localhost:3100',
 };
 
-const V1Routes = {
+export const V1Routes = {
 	BASE_V1: `${URLConstantsBase.BASE_URL}/api/v1`,
 };
 
@@ -33,13 +34,5 @@ export const ChatEndpoints = {
 	GET_CHATS_BY_USER: (user: string) => `${V1Routes.BASE_V1}/chat/user/${user}`,
 	COMPLETION: `${V1Routes.BASE_V1}/chat/stream`,
 	DELETE_CHAT_BY_ID: (chatId: number) => `${V1Routes.BASE_V1}/chat/${chatId}`,
-
-	/**
-	 * Message Queue Routes
-	 */
-	ADD_TASK_TO_QUEUE: `${V1Routes.BASE_V1}/message-queue`,
-};
-
-export const SocketEndpoint = {
-	BASE_URL: 'http://localhost:3333',
+	ADD_TASK_TO_QUEUE: `${V1Routes.BASE_V1}/chat/message-queue`,
 };

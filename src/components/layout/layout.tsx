@@ -1,4 +1,3 @@
-import Header from './head-nav';
 import Navbar from './nav';
 import { Outlet } from 'react-router-dom';
 

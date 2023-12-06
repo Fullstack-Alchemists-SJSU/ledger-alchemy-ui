@@ -8,6 +8,7 @@ import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistStore } from 'redux-persist';
 import { Auth0Provider } from '@auth0/auth0-react';
+import { V1Routes } from './services/url-constants';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
@@ -16,6 +17,7 @@ root.render(
 		clientId={process.env.REACT_APP_AUTH0_CLIENT_ID as string}
 		authorizationParams={{
 			redirect_uri: `${window.location.protocol}//${window.location.host}/`,
+			audience: V1Routes.BASE_V1,
 		}}
 	>
 		<Provider store={store}>

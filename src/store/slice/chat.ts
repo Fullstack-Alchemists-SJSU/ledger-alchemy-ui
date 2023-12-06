@@ -1,7 +1,7 @@
 import { Slice, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import NetworkState from '../networkstate';
 import { createNewChatService, deleteChatByIdService, getChatsByUserIdService } from '../../services/chat';
-import message, { Message, Role, setMessages } from './message';
+import { Message, Role, setMessages } from './message';
 
 export type Chat = {
 	id: number;
@@ -61,43 +61,53 @@ export const createNewChat = createAsyncThunk(
 	}
 );
 
-export const getChatsByUserId = createAsyncThunk('chat/getChatsByUserId', async (userSub: string, { dispatch }) => {
-	try {
-		const response = await getChatsByUserIdService(userSub);
-		const messages = response.data
-			.map((chat: Chat & { messages: Message[] }) =>
-				chat.messages && chat.messages.length > 0 ? chat.messages : []
-			)
-			.flat();
-		if (messages.length > 0) {
-			dispatch(setMessages(messages));
+export const getChatsByUserId = createAsyncThunk(
+	'chat/getChatsByUserId',
+	async (data: { userSub: string; token: string }, { dispatch }) => {
+		try {
+			const response = await getChatsByUserIdService(data.userSub, data.token);
+			const messages = response.data
+				.map((chat: Chat & { messages: Message[] }) =>
+					chat.messages && chat.messages.length > 0 ? chat.messages : []
+				)
+				.flat();
+			if (messages.length > 0) {
+				dispatch(setMessages(messages));
+			}
+			return response.data.map((chat: Chat) => ({
+				id: chat.id,
+				title: chat.title,
+				createdAt: chat.createdAt,
+				user: chat.user,
+			}));
+		} catch (error: any) {
+			console.log('error', error);
+			throw Error(error.response.data.message);
 		}
-		return response.data.map((chat: Chat) => ({
-			id: chat.id,
-			title: chat.title,
-			createdAt: chat.createdAt,
-			user: chat.user,
-		}));
-	} catch (error: any) {
-		console.log('error', error);
-		throw Error(error.response.data.message);
 	}
-});
+);
 
-export const deleteChatById = createAsyncThunk('chat/deleteChatById', async (chatId: number) => {
-	try {
-		const response = await deleteChatByIdService(chatId);
-		return chatId;
-	} catch (error: any) {
-		console.log('error', error);
-		throw Error(error.response.data.message);
+export const deleteChatById = createAsyncThunk(
+	'chat/deleteChatById',
+	async (data: { chatId: number; token: string }) => {
+		try {
+			await deleteChatByIdService(data.chatId, data.token);
+			return data.chatId;
+		} catch (error: any) {
+			console.log('error', error);
+			throw Error(error.response.data.message);
+		}
 	}
-});
+);
 
 const chatSlice: Slice = createSlice({
 	name: 'chat',
 	initialState,
-	reducers: {},
+	reducers: {
+		clearChat() {
+			return initialState;
+		},
+	},
 	extraReducers: (builder) => {
 		builder.addCase(createNewChat.pending, (state) => {
 			state.networkState = 'loading';
@@ -136,4 +146,5 @@ const chatSlice: Slice = createSlice({
 	},
 });
 
+export const { clearChat } = chatSlice.actions;
 export default chatSlice.reducer;

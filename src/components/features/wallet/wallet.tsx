@@ -1,6 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Box, SimpleGrid, Text, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton } from '@chakra-ui/react';
+import {
+	Box,
+	SimpleGrid,
+	Text,
+	Button,
+	Modal,
+	ModalOverlay,
+	ModalContent,
+	ModalHeader,
+	ModalFooter,
+	ModalBody,
+	ModalCloseButton,
+} from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import { createLinkToken, getAccessToken, getAccountsByUserId } from '../../../store/slice/account';
 import { Account } from '../../../store/slice/account';
@@ -8,14 +20,10 @@ import { RootState } from '../../../store/store';
 import { PlaidLink, usePlaidLink } from 'react-plaid-link';
 
 const AccountCard = ({ account }: { account: Account }) => (
-	<Box borderWidth="1px"
-		borderRadius="lg"
-		overflow="hidden"
-		p={4}
-		shadow="md"
-		borderColor="gray.200"
-		bg="white">
-		<Text fontSize='xl' fontWeight='bold'>{account.name}</Text>
+	<Box borderWidth="1px" borderRadius="lg" overflow="hidden" p={4} shadow="md" borderColor="gray.200" bg="white">
+		<Text fontSize="xl" fontWeight="bold">
+			{account.name}
+		</Text>
 		<Text>Type: {account.type}</Text>
 		<Text>Balance: ${account.balances.current}</Text>
 		<Text>Available: ${account.balances.available}</Text>
@@ -26,7 +34,7 @@ const AccountCard = ({ account }: { account: Account }) => (
 
 function MyWallet(this: any) {
 	const dispatch = useDispatch();
-	const userSub = useSelector((state: RootState) => state.rootReducer.user.user?.sub);
+	const user = useSelector((state: RootState) => state.rootReducer.user.user);
 	const accounts = useSelector((state: RootState) => state.rootReducer.accountReducer.accounts || []);
 
 	const [isModalOpen, setIsModalOpen] = useState(false);
@@ -36,7 +44,9 @@ function MyWallet(this: any) {
 		token: linkToken?.link_token,
 		onSuccess: (public_token, metadata) => {
 			// send public_token to server
-			dispatch(getAccessToken({ userSub: userSub as string, public_token }) as any);
+			dispatch(
+				getAccessToken({ userSub: user?.sub as string, public_token, token: user?.token as string }) as any
+			);
 			setIsModalOpen(false);
 			console.log('accounts in usePlaidLink', accounts);
 		},
@@ -44,13 +54,13 @@ function MyWallet(this: any) {
 
 	useEffect(() => {
 		if (accounts != null && accounts.length === 0) {
-			dispatch(getAccountsByUserId(userSub as string) as any);
+			dispatch(getAccountsByUserId({ userSub: user?.sub as string, token: user?.token as string }) as any);
 			console.log('accounts in useEffect', accounts);
 		}
 	}, []);
 
 	useEffect(() => {
-		console.log("linkToken", linkToken);
+		console.log('linkToken', linkToken);
 	}, [networkState, linkToken, error]);
 
 	return (
@@ -58,16 +68,17 @@ function MyWallet(this: any) {
 			<h1 className="text-2xl font-semibold ">Accounts</h1>
 			<Box p={5}>
 				<SimpleGrid columns={{ sm: 2, md: 3 }} spacing={10}>
-					{accounts && accounts.map((account: Account) => (
-						<AccountCard key={account.account_id} account={account} />
-					))}
+					{accounts &&
+						accounts.map((account: Account) => <AccountCard key={account.account_id} account={account} />)}
 					<Button
 						leftIcon={<AddIcon />}
-						colorScheme='teal'
-						variant='outline'
+						colorScheme="teal"
+						variant="outline"
 						onClick={() => {
 							setIsModalOpen(true);
-							dispatch(createLinkToken(userSub as string) as any);
+							dispatch(
+								createLinkToken({ userSub: user?.sub as string, token: user?.token as string }) as any
+							);
 						}}
 						borderWidth="1px"
 						borderRadius="lg"
@@ -97,13 +108,15 @@ function MyWallet(this: any) {
 								<Button colorScheme="blue" mr={3} onClick={() => open()} disabled={!ready}>
 									Connect to Plaid
 								</Button>
-								<Button variant="ghost" onClick={() => setIsModalOpen(false)}>Cancel</Button>
+								<Button variant="ghost" onClick={() => setIsModalOpen(false)}>
+									Cancel
+								</Button>
 							</ModalFooter>
 						</ModalContent>
 					</Modal>
 				</SimpleGrid>
 			</Box>
-		</div >
+		</div>
 	);
 }
 

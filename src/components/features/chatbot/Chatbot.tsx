@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import BaseContainer from '../../common/responsive/BaseContainer';
 import Toolbar from '../../common/toolbar/Toolbar';
-import { Button, IconButton, Stack } from '@chakra-ui/react';
+import { Button, Stack } from '@chakra-ui/react';
 import { AiOutlinePlus } from 'react-icons/ai';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../store/store';
@@ -9,10 +9,8 @@ import { createNewChat } from '../../../store/slice/chat';
 import ChatList from './ChatList';
 
 const Chatbot = () => {
-	const [reply, setReply] = useState('');
-
 	const user = useSelector((state: RootState) => state.rootReducer.user.user);
-	const { chats, networkState, error } = useSelector((state: RootState) => state.rootReducer.chat);
+	const { networkState, error } = useSelector((state: RootState) => state.rootReducer.chat);
 	const dispatch = useDispatch();
 
 	const handleNewChat = () => {
@@ -25,7 +23,7 @@ const Chatbot = () => {
 
 	return (
 		<BaseContainer>
-			<div className="flex flex-col flex-1">
+			<div className="flex flex-col flex-1 max-h-screen">
 				<Toolbar title="Talk to Alchemo" />
 				<ChatList />
 			</div>

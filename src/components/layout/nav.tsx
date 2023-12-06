@@ -13,17 +13,18 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import { clearUser } from '../../store/slice/user';
 import { useAuth0 } from '@auth0/auth0-react';
-import { log } from 'console';
+import { clearChat } from '../../store/slice/chat';
+import { clearMessages } from '../../store/slice/message';
 import { clearAccount } from '../../store/slice/account';
+import { clearTransactions } from '../../store/slice/transaction';
 
 const Navbar = () => {
 	const [open, setOpen] = useState(true);
 	const user = useSelector((state: RootState) => state.rootReducer.user.user);
-	const [menus, setMenus] = useState([
+	const [menus, _] = useState([
 		{ name: 'Dashboard', link: '/', icon: MdOutlineDashboard },
 		{ name: 'My Wallet', link: '/mywallet', icon: FaWallet },
 		{ name: 'Recent Transactions', link: '/rcttransactions', icon: FaMoneyBillWave },
-		{ name: 'Set My Goals ', link: '/goals', icon: GoGoal },
 		{ name: 'Talk to Alchemo', link: '/chat', icon: BsFillChatDotsFill },
 		{ name: 'Settings', link: '/settings', icon: IoSettings, margin: true },
 		{
@@ -50,22 +51,25 @@ const Navbar = () => {
 						<Link
 							to={menu?.link}
 							key={i}
-							className={` ${menu?.margin && 'mt-5'
-								} group flex items-center text-sm  gap-3.5 font-medium p-2 hover:bg-gray-800 rounded-md`}
+							className={` ${
+								menu?.margin && 'mt-5'
+							} group flex items-center text-sm  gap-3.5 font-medium p-2 hover:bg-gray-800 rounded-md`}
 						>
 							<div>{React.createElement(menu?.icon, { size: '20' })}</div>
 							<h2
 								style={{
 									transitionDelay: `${i + 3}00ms`,
 								}}
-								className={`whitespace-pre duration-500 ${!open && 'opacity-0 translate-x-28 overflow-hidden'
-									}`}
+								className={`whitespace-pre duration-500 ${
+									!open && 'opacity-0 translate-x-28 overflow-hidden'
+								}`}
 							>
 								{menu?.name}
 							</h2>
 							<h2
-								className={`${open && 'hidden'
-									} absolute left-48 bg-white font-semibold whitespace-pre text-gray-900 rounded-md drop-shadow-lg px-0 py-0 w-0 overflow-hidden group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-300 group-hover:w-fit  `}
+								className={`${
+									open && 'hidden'
+								} absolute left-48 bg-white font-semibold whitespace-pre text-gray-900 rounded-md drop-shadow-lg px-0 py-0 w-0 overflow-hidden group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-300 group-hover:w-fit  `}
 							>
 								{menu?.name}
 							</h2>
@@ -75,9 +79,12 @@ const Navbar = () => {
 					<div
 						className="group flex items-center text-sm  gap-3.5 font-medium p-2 hover:bg-gray-800 rounded-md cursor-pointer"
 						onClick={() => {
-							logout();
+							logout({ logoutParams: { returnTo: window.location.origin } });
 							dispatch(clearUser());
 							dispatch(clearAccount({}));
+							dispatch(clearChat({}));
+							dispatch(clearMessages());
+							dispatch(clearTransactions());
 						}}
 					>
 						<div>{React.createElement(ImExit, { size: '20' })}</div>
@@ -85,14 +92,16 @@ const Navbar = () => {
 							style={{
 								transitionDelay: `${menus.length + 6}00ms`,
 							}}
-							className={`whitespace-pre duration-500 ${!open && 'opacity-0 translate-x-28 overflow-hidden'
-								}`}
+							className={`whitespace-pre duration-500 ${
+								!open && 'opacity-0 translate-x-28 overflow-hidden'
+							}`}
 						>
 							Logout
 						</h2>
 						<h2
-							className={`${open && 'hidden'
-								} absolute left-48 bg-white font-semibold whitespace-pre text-gray-900 rounded-md drop-shadow-lg px-0 py-0 w-0 overflow-hidden group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-300 group-hover:w-fit  `}
+							className={`${
+								open && 'hidden'
+							} absolute left-48 bg-white font-semibold whitespace-pre text-gray-900 rounded-md drop-shadow-lg px-0 py-0 w-0 overflow-hidden group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-300 group-hover:w-fit  `}
 						>
 							Logout
 						</h2>

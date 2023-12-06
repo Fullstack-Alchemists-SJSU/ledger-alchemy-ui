@@ -1,4 +1,4 @@
-import { Action, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import NetworkState from '../networkstate';
 import { addMessageTaskToQueueService } from '../../services/message';
 
@@ -61,6 +61,9 @@ const messageSlice = createSlice({
 				state.messages = [...state.messages, action.payload];
 			}
 		},
+		clearMessages() {
+			return initialState;
+		},
 	},
 	extraReducers: (builder) => {
 		builder.addCase(addMessageTaskToQueue.pending, (state) => {
@@ -77,6 +80,6 @@ const messageSlice = createSlice({
 	},
 });
 
-export const { setMessages, addMessage } = messageSlice.actions;
+export const { setMessages, addMessage, clearMessages } = messageSlice.actions;
 
 export default messageSlice.reducer;

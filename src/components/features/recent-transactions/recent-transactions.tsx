@@ -27,14 +27,13 @@ import {
 } from '@chakra-ui/react';
 import { InfoIcon, TriangleUpIcon, TriangleDownIcon } from '@chakra-ui/icons';
 import { Transaction, getTransactionsByUserId, syncTransactionsByUserId } from '../../../store/slice/transaction';
-import { AsyncThunkAction, Dispatch, AnyAction } from '@reduxjs/toolkit';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../store/store';
 
 function RecentTransactions() {
 	// State to store transactions
 	const dispatch = useDispatch();
-	const userSub = useSelector((state: RootState) => state.rootReducer.user.user?.sub);
+	const user = useSelector((state: RootState) => state.rootReducer.user.user);
 	const transactions = useSelector((state: RootState) => state.rootReducer.transactionReducer.transactions || []);
 	const [startDate, setStartDate] = useState('');
 	const [endDate, setEndDate] = useState('');
@@ -47,8 +46,8 @@ function RecentTransactions() {
 
 	useEffect(() => {
 		// Dispatch actions to get transactions
-		dispatch(getTransactionsByUserId(userSub as string) as any);
-		dispatch(syncTransactionsByUserId(userSub as string) as any);
+		dispatch(getTransactionsByUserId({ userSub: user?.sub as string, token: user?.token as string }) as any);
+		dispatch(syncTransactionsByUserId({ userSub: user?.sub as string, token: user?.token as string }) as any);
 	}, []);
 
 	useEffect(() => {
@@ -60,7 +59,6 @@ function RecentTransactions() {
 	const cancelRef = React.useRef(null);
 
 	const { networkState, error } = useSelector((state: RootState) => state.rootReducer.transactionReducer);
-
 
 	const handleButtonClick = (period: React.SetStateAction<string>) => {
 		setIsCustomRange(false);
@@ -78,7 +76,7 @@ function RecentTransactions() {
 	};
 
 	const filterTransactions = (start: string | number | Date, end: string | number | Date) => {
-		const filtered = transactions.filter(trans => {
+		const filtered = transactions.filter((trans) => {
 			const transDate = new Date(trans.date);
 			return transDate >= new Date(start) && transDate <= new Date(end);
 		});
@@ -127,23 +125,27 @@ function RecentTransactions() {
 	};
 
 	const getSortIcon = (field: string) => {
-		return sortField === field ? (sortDirection === 'asc' ? <TriangleUpIcon /> : <TriangleDownIcon />) : null;
+		return sortField === field ? sortDirection === 'asc' ? <TriangleUpIcon /> : <TriangleDownIcon /> : null;
 	};
 
-
 	return (
-		<div className="h-screen flex-1 p-7">
+		<div className="h-screen flex-1 p-7 max-h-screen overflow-auto">
 			{networkState === 'loading' && <Text>Loading transactions...</Text>}
-			{error && <Text color="red.500">{error}</Text>}
+			{/* {error && <Text color="red.500">{error}</Text>} */}
 			<h1 className="text-2xl font-semibold ">Recent Transactions</h1>
-			<Stack direction='row' spacing={4} align='center' mb={4}>
+			<Stack direction="row" spacing={4} align="center" mb={4}>
 				<FormControl>
-					<FormLabel htmlFor='from-date'>From</FormLabel>
-					<Input id='from-date' type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+					<FormLabel htmlFor="from-date">From</FormLabel>
+					<Input
+						id="from-date"
+						type="date"
+						value={startDate}
+						onChange={(e) => setStartDate(e.target.value)}
+					/>
 				</FormControl>
 				<FormControl>
-					<FormLabel htmlFor='to-date'>To</FormLabel>
-					<Input id='to-date' type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+					<FormLabel htmlFor="to-date">To</FormLabel>
+					<Input id="to-date" type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
 				</FormControl>
 				<Button
 					colorScheme={isCustomRange ? 'blue' : 'gray'}
@@ -153,7 +155,7 @@ function RecentTransactions() {
 				>
 					Apply
 				</Button>
-				<ButtonGroup isAttached variant='outline'>
+				<ButtonGroup isAttached variant="outline">
 					<Button
 						colorScheme={activeButton === '1m' ? 'blue' : 'gray'}
 						onClick={() => handleButtonClick('1m')}
@@ -171,14 +173,16 @@ function RecentTransactions() {
 			{dateError && <Text color="red.500">{dateError}</Text>}
 
 			<TableContainer>
-				<Table variant='striped' colorScheme='gray'>
+				<Table variant="striped" colorScheme="gray">
 					<TableCaption>Recent financial transactions</TableCaption>
 					<Thead>
 						<Tr>
 							<Th>Sr.</Th>
 							<Th onClick={() => handleSort('date')}>Date {getSortIcon('date')}</Th>
 							<Th onClick={() => handleSort('description')}>Description {getSortIcon('description')}</Th>
-							<Th isNumeric onClick={() => handleSort('amount')}>Amount ($) {getSortIcon('amount')}</Th>
+							<Th isNumeric onClick={() => handleSort('amount')}>
+								Amount ($) {getSortIcon('amount')}
+							</Th>
 							<Th>Info</Th>
 						</Tr>
 					</Thead>
@@ -188,15 +192,14 @@ function RecentTransactions() {
 								<Td>{index + 1}</Td>
 								<Td>{trans.date}</Td>
 								<Td>{trans.name}</Td>
-								<Td isNumeric color={trans.amount.toString().charAt(0) === '-' ? 'red.500' : 'green.500'}>
+								<Td
+									isNumeric
+									color={trans.amount.toString().charAt(0) === '-' ? 'red.500' : 'green.500'}
+								>
 									{trans.amount}
 								</Td>
 								<Td>
-									<IconButton
-										aria-label="More info"
-										icon={<InfoIcon />}
-										onClick={onOpen}
-									/>
+									<IconButton aria-label="More info" icon={<InfoIcon />} onClick={onOpen} />
 								</Td>
 							</Tr>
 						))}
@@ -204,19 +207,13 @@ function RecentTransactions() {
 				</Table>
 			</TableContainer>
 			{/* AlertDialog for Transaction Details */}
-			<AlertDialog
-				isOpen={isOpen}
-				leastDestructiveRef={cancelRef}
-				onClose={onClose}
-			>
+			<AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
 				<AlertDialogOverlay>
 					<AlertDialogContent>
-						<AlertDialogHeader fontSize='lg' fontWeight='bold'>
+						<AlertDialogHeader fontSize="lg" fontWeight="bold">
 							Transaction Details
 						</AlertDialogHeader>
-						<AlertDialogBody>
-							{/* Transaction details go here */}
-						</AlertDialogBody>
+						<AlertDialogBody>{/* Transaction details go here */}</AlertDialogBody>
 						<AlertDialogFooter>
 							<Button ref={cancelRef} onClick={onClose}>
 								Close
