@@ -26,50 +26,41 @@ import {
 	FormLabel,
 } from '@chakra-ui/react';
 import { InfoIcon, TriangleUpIcon, TriangleDownIcon } from '@chakra-ui/icons';
-
-interface Transaction {
-	[key: string]: number | string;
-	id: number;
-	date: string;
-	description: string;
-	amount: number;
-	type: string;
-}
+import { Transaction, getTransactionsByUserId, syncTransactionsByUserId } from '../../../store/slice/transaction';
+import { AsyncThunkAction, Dispatch, AnyAction } from '@reduxjs/toolkit';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../../store/store';
 
 function RecentTransactions() {
 	// State to store transactions
-	const [transactions, setTransactions] = useState<Transaction[]>([]);
+	const dispatch = useDispatch();
+	const userSub = useSelector((state: RootState) => state.rootReducer.user.user?.sub);
+	const transactions = useSelector((state: RootState) => state.rootReducer.transactionReducer.transactions || []);
 	const [startDate, setStartDate] = useState('');
 	const [endDate, setEndDate] = useState('');
 	const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([]);
 	const [activeButton, setActiveButton] = useState('');
 	const [isCustomRange, setIsCustomRange] = useState(false);
 	const [dateError, setDateError] = useState('');
-	const [sortField, setSortField] = useState('');
+	const [sortField, setSortField] = useState<keyof Transaction | ''>('');
 	const [sortDirection, setSortDirection] = useState('');
 
-	// Fetch transactions from the API
 	useEffect(() => {
-		// Replace with actual API call
-		getTransactions().then(data => setTransactions(data));
+		// Dispatch actions to get transactions
+		dispatch(getTransactionsByUserId(userSub as string) as any);
+		dispatch(syncTransactionsByUserId(userSub as string) as any);
 	}, []);
+
+	useEffect(() => {
+		setFilteredTransactions(transactions);
+	}, [transactions]);
 
 	// Disclosure for AlertDialog
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const cancelRef = React.useRef(null);
 
-	// Function to fetch transactions (replace with actual API call)
-	async function getTransactions() {
-		// API call to fetch transactions
-		// return await fetch('/api/getTransactions').then(res => res.json());
-		return [
-			// Dummy data for demonstration
-			{ id: 1, date: '11/12/2023', description: 'McDonald\'s', amount: 12.4, type: 'debit' },
-			{ id: 2, date: '11/15/2023', description: 'MobilePayment', amount: 120, type: 'debit' },
-			{ id: 3, date: '10/25/2023', description: 'Airlines', amount: 15, type: 'credit' },
-			// Add more transactions here
-		];
-	}
+	const { networkState, error } = useSelector((state: RootState) => state.rootReducer.transactionReducer);
+
 
 	const handleButtonClick = (period: React.SetStateAction<string>) => {
 		setIsCustomRange(false);
@@ -119,8 +110,11 @@ function RecentTransactions() {
 		if (!sortField) return filteredTransactions;
 
 		const sorted = [...filteredTransactions].sort((a, b) => {
-			if (a[sortField] < b[sortField]) return sortDirection === 'asc' ? -1 : 1;
-			if (a[sortField] > b[sortField]) return sortDirection === 'asc' ? 1 : -1;
+			const valueA = a[sortField] || '';
+			const valueB = b[sortField] || '';
+
+			if (valueA < valueB) return sortDirection === 'asc' ? -1 : 1;
+			if (valueA > valueB) return sortDirection === 'asc' ? 1 : -1;
 			return 0;
 		});
 
@@ -128,7 +122,7 @@ function RecentTransactions() {
 	}, [filteredTransactions, sortField, sortDirection]);
 
 	const handleSort = (field: React.SetStateAction<string>) => {
-		setSortField(field);
+		setSortField(field as any);
 		setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
 	};
 
@@ -139,6 +133,8 @@ function RecentTransactions() {
 
 	return (
 		<div className="h-screen flex-1 p-7">
+			{networkState === 'loading' && <Text>Loading transactions...</Text>}
+			{error && <Text color="red.500">{error}</Text>}
 			<h1 className="text-2xl font-semibold ">Recent Transactions</h1>
 			<Stack direction='row' spacing={4} align='center' mb={4}>
 				<FormControl>
@@ -188,11 +184,11 @@ function RecentTransactions() {
 					</Thead>
 					<Tbody>
 						{sortedTransactions.map((trans, index) => (
-							<Tr key={trans.id}>
+							<Tr key={trans.account_id}>
 								<Td>{index + 1}</Td>
 								<Td>{trans.date}</Td>
-								<Td>{trans.description}</Td>
-								<Td isNumeric color={trans.type === 'credit' ? 'green.500' : 'red.500'}>
+								<Td>{trans.name}</Td>
+								<Td isNumeric color={trans.amount.toString().charAt(0) === '-' ? 'red.500' : 'green.500'}>
 									{trans.amount}
 								</Td>
 								<Td>
