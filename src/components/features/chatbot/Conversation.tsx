@@ -18,6 +18,8 @@ const Conversation = () => {
 	const [firstMessageSent, setFirstMessageSent] = useState(false);
 
 	let { id } = useParams();
+
+	const user = useSelector((state: RootState) => state.rootReducer.user.user);
 	let chat = useSelector((state: RootState) =>
 		state.rootReducer.chat.chats.find((chat: Chat) => chat.id === Number(id))
 	);
@@ -55,7 +57,7 @@ const Conversation = () => {
 		setAiLoading(true);
 		const response = await fetch(ChatEndpoints.COMPLETION, {
 			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
+			headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${user?.token}` },
 			body: JSON.stringify({ messages }),
 		});
 		if (!response.ok || !response.body) {
