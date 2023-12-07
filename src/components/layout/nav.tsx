@@ -4,7 +4,6 @@ import { FaWallet } from 'react-icons/fa';
 import { FaMoneyBillWave } from 'react-icons/fa6';
 import { GoGoal } from 'react-icons/go';
 import { BsFillChatDotsFill } from 'react-icons/bs';
-import { IoSettings } from 'react-icons/io5';
 import { PiUserCircleFill } from 'react-icons/pi';
 import { ImExit } from 'react-icons/im';
 import { Link } from 'react-router-dom';
@@ -19,14 +18,13 @@ import { clearAccount } from '../../store/slice/account';
 import { clearTransactions } from '../../store/slice/transaction';
 
 const Navbar = () => {
-	const [open, setOpen] = useState(true);
+	const [open, setOpen] = useState(false);
 	const user = useSelector((state: RootState) => state.rootReducer.user.user);
 	const [menus, _] = useState([
 		{ name: 'Dashboard', link: '/', icon: MdOutlineDashboard },
 		{ name: 'My Wallet', link: '/mywallet', icon: FaWallet },
 		{ name: 'Recent Transactions', link: '/rcttransactions', icon: FaMoneyBillWave },
 		{ name: 'Talk to Alchemo', link: '/chat', icon: BsFillChatDotsFill },
-		{ name: 'Settings', link: '/settings', icon: IoSettings, margin: true },
 		{
 			name: user?.name,
 			link: '/profile',
@@ -51,9 +49,7 @@ const Navbar = () => {
 						<Link
 							to={menu?.link}
 							key={i}
-							className={` ${
-								menu?.margin && 'mt-5'
-							} group flex items-center text-sm  gap-3.5 font-medium p-2 hover:bg-gray-800 rounded-md`}
+							className={`group flex items-center text-sm  gap-3.5 font-medium p-2 hover:bg-gray-800 rounded-md`}
 						>
 							<div>{React.createElement(menu?.icon, { size: '20' })}</div>
 							<h2
