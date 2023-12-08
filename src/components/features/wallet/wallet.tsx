@@ -12,6 +12,7 @@ import {
 	ModalFooter,
 	ModalBody,
 	ModalCloseButton,
+	Flex, Heading, Badge,
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import { createLinkToken, getAccessToken, getAccountsByUserId } from '../../../store/slice/account';
@@ -21,14 +22,28 @@ import { PlaidLink, usePlaidLink } from 'react-plaid-link';
 
 const AccountCard = ({ account }: { account: Account }) => (
 	<Box borderWidth="1px" borderRadius="lg" overflow="hidden" p={4} shadow="md" borderColor="gray.200" bg="white">
-		<Text fontSize="xl" fontWeight="bold">
-			{account.name}
-		</Text>
-		<Text>Type: {account.type}</Text>
-		<Text>Balance: ${account.balances.current}</Text>
-		<Text>Available: ${account.balances.available}</Text>
-		<Text>Subtype: {account.subtype}</Text>
-		{/* Add more details as needed */}
+		<Heading fontSize="xl" mb={2}>{account.name}</Heading> {/* Bank Name */}
+
+		<Flex justify="space-between" align="center" mb={2}>
+			<Text fontWeight="bold">Account ID:</Text>
+			<Badge colorScheme="blue">{account.account_id}</Badge>
+		</Flex>
+
+		<Text mb={2}>Type: {account.type}</Text> {/* Account Type */}
+		<Text mb={2}>Subtype: {account.subtype}</Text> {/* Account Subtype */}
+
+		{account.official_name && <Text mb={2}>Official Name: {account.official_name}</Text>} {/* Official Name */}
+
+		<Flex justify="space-between" align="baseline">
+			<Box>
+				<Text mb={1}>ISO Currency Code: {account.balances.iso_currency_code}</Text>
+				{account.balances.unofficial_currency_code && <Text mb={1}>Unofficial Currency Code: {account.balances.unofficial_currency_code}</Text>}
+			</Box>
+			<Box textAlign="right">
+				<Text fontSize="lg" fontWeight="bold" color="green.500">Balance: ${account.balances.current}</Text>
+				<Text fontSize="md">Available: ${account.balances.available}</Text>
+			</Box>
+		</Flex>
 	</Box>
 );
 

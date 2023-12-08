@@ -1,6 +1,6 @@
 {
 	"name": "ledger-alchemy-ui",
-	"version": "1.3.5",
+	"version": "1.3.6",
 	"private": true,
 	"dependencies": {
 		"@auth0/auth0-react": "^2.2.3",

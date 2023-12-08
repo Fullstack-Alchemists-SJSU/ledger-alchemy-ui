@@ -16,8 +16,8 @@ spec:
         spec:
             containers:
                 - name: ledger-alchemy-ui-container
-                  image: SJC.ocir.io/<DOCKER_OBJECT_STORAGE_NAMESPACE>/ledger-alchemy-ui-microservice:1.3.5
-                  imagePullPolicy: 'Always'
+                  image: SJC.ocir.io/<DOCKER_OBJECT_STORAGE_NAMESPACE>/ledger-alchemy-ui-microservice:1.3.6
+                  imagePullPolicy: "Always"
                   ports:
                       - containerPort: 4000
             imagePullSecrets:
